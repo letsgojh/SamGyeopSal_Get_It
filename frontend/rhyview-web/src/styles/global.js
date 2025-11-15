@@ -14,17 +14,19 @@ export const GlobalStyle = createGlobalStyle`
     --badge-blue:#3b82f6;
     --card-shadow: 0 10px 24px rgba(0,0,0,.08);
   }
-  *{box-sizing:border-box}
-  html,body,#root{height:100%}
+  *{ box-sizing:border-box; }
+  html,body,#root{ height:100%; }
   body{
     margin:0;
     color:var(--text);
     background:var(--bg);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo","Noto Sans KR", "Malgun Gothic", sans-serif;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+      "Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic", sans-serif;
   }
   a{text-decoration:none; color:inherit}
+  img{ display:block; max-width:100%; }
 `;
 
 export const AppShell = styled.div`
@@ -35,9 +37,16 @@ export const AppShell = styled.div`
   display:flex;
   border-left:1px solid var(--line);
   border-right:1px solid var(--line);
+
+  @media (max-width: 960px) {
+    max-width: 100%;
+    border-left:none;
+    border-right:none;
+  }
 `;
 
 export const Main = styled.main`
   flex:1;
   background:#fff;
+  min-width:0; /* flex 컨테이너에서 내용 넘침 방지 */
 `;

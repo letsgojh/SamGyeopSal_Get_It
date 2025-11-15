@@ -15,3 +15,4 @@ export default function Rating({value, count}){
     </Box>
   );
 }
+

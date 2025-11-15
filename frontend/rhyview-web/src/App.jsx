@@ -1,9 +1,11 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { GlobalStyle, AppShell, Main } from "./styles/global";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Reviews from "./pages/Reviews";
-import { GlobalStyle, AppShell, Main } from "./styles/global";
+import Community from "./pages/Community";
+import VenueDetail from "./pages/VenueDetail";
 
 export default function App() {
   return (
@@ -15,7 +17,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/reviews" element={<Reviews />} />
-            {/* 나머지 메뉴는 추후 추가 */}
+            <Route path="/community" element={<Community />} />
+            <Route path="/venues/:id" element={<VenueDetail />} />
           </Routes>
         </Main>
       </AppShell>
