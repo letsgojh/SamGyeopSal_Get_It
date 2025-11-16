@@ -68,6 +68,38 @@ const SeatTag = styled.span` padding:4px 8px; border-radius:999px; background:#f
 const SmallRating = styled.span` color:#f59e0b; `;
 const ReviewText = styled.p` margin:0; line-height:1.5; `;
 
+const ModalListWrapper = styled.div`
+  padding: 0 20px 16px; /* 폼과 좌우 패딩 맞춤 */
+  
+  /* 리뷰가 없을 때 메시지 */
+  .empty-message {
+    color: #9ca3af;
+    font-size: 13px;
+    text-align: center;
+    padding: 24px 0 8px;
+  }
+
+  /* 모달 내의 리뷰 목록은 스크롤되도록 */
+  ${ReviewList} {
+    margin-top: 10px;
+    max-height: 250px; /* 최대 높이 지정 */
+    overflow-y: auto; /* 스크롤 */
+    padding-right: 8px; /* 스크롤바 공간 */
+  }
+
+  /* 모달 내의 리뷰 카드 스타일 약간 조정 */
+  ${ReviewCard} {
+    padding: 12px 14px;
+  }
+
+  /* 유저/시간 정보 스타일 */
+  .review-info {
+    font-size: 11px;
+    color: #6b7280;
+    margin-left: auto; /* 오른쪽 끝으로 */
+  }
+`;
+
 export default function VenueDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -76,9 +108,10 @@ export default function VenueDetail() {
   const initialReviews = useMemo(() => {
     if (!venue) return [];
     return [
-      { id: 1, seat: "1층 B구역 12열 8번", rating: "4.5", title: "시야/음향 모두 만족", text: `${venue.name}에서 관람. 무대 전체가 잘 보이면서 배우 표정도 적당히 보입니다.` },
-      { id: 2, seat: "2층 중앙 C구역 3열 5번", rating: "4.0", title: "무대 구도 보기 좋음", text: "전체 그림 보기에 좋지만 표정은 다소 멀게 느껴질 수 있어요." },
-      { id: 3, seat: "1층 측면 D구역 5열 2번", rating: "3.8", title: "일부 시야 방해", text: "연출에 따라 한쪽이 살짝 가려질 때가 있으나 몰입감은 좋습니다." },
+      { id: 1, seat: "B5", rating: "4.5", text: `${venue.name}에서 관람. 무대 전체가 잘 보이면서 배우 표정도 적당히 보입니다.`, user: "뮤지컬광", time: "3일 전" },
+      { id: 2, seat: "C8", rating: "4.0", text: "전체 그림 보기에 좋지만 표정은 다소 멀게 느껴질 수 있어요.", user: "Rhyview", time: "5일 전" },
+      { id: 3, seat: "A6", rating: "5.0", text: "배우들 표정, 무대 전체 다 좋았어요. 강추!", user: "공연매니아", time: "1주 전" },
+      { id: 4, seat: "B5", rating: "3.8", text: "앞사람 머리가 좀 걸렸지만 볼만했습니다.", user: "초보관람객", time: "2주 전" },
     ];
   }, [venue]);
 
@@ -108,6 +141,9 @@ export default function VenueDetail() {
     setSelectedSeat(null); // (3) 선택한 좌석 초기화
   };
 
+  // 👈 +2. 선택된 좌석의 리뷰만 필터링합니다.
+  const reviewsForSeat = reviews.filter(r => r.seat === selectedSeat);
+
   if (!venue) {
     return (
       <Wrapper>
@@ -131,6 +167,7 @@ export default function VenueDetail() {
             <SeatingChart
               layout={venue.seatingLayout || [[]]} // layout이 없을 경우 에러 방지
               onSeatClick={handleSeatClick}
+              reviews={reviews}
             />
           </SeatMapBox>
 
@@ -150,8 +187,8 @@ export default function VenueDetail() {
 
         <ReviewSection>
           <ReviewHeaderRow>
-            <ReviewTitle>좌석 리뷰</ReviewTitle>
-            <ReviewHint>실제 서비스에서는 관람객 리뷰가 노출됩니다.</ReviewHint>
+            <ReviewTitle>모든 좌석 리뷰</ReviewTitle>
+            <ReviewHint>좌석 배치도에서 좌석을 클릭해 리뷰를 남겨보세요.</ReviewHint>
           </ReviewHeaderRow>
           <ReviewList>
             {reviews.map(r => (
@@ -160,7 +197,6 @@ export default function VenueDetail() {
                   <SeatTag>{r.seat}</SeatTag>
                   <SmallRating>★ {r.rating}</SmallRating>
                 </ReviewMetaRow>
-                <ReviewText style={{ fontWeight: 700, marginBottom: 4 }}>{r.title}</ReviewText>
                 <ReviewText>{r.text}</ReviewText>
               </ReviewCard>
             ))}
@@ -175,8 +211,38 @@ export default function VenueDetail() {
       <Modal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
-        title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰 작성"}
+        title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰"}
       >
+        {/* (1) 이 좌석의 리뷰 목록 */}
+        <ModalListWrapper>
+          {reviewsForSeat.length === 0 ? (
+            <div className="empty-message">
+              이 좌석의 첫 리뷰를 남겨주세요!
+            </div>
+          ) : (
+            <>
+              <ReviewTitle style={{ fontSize: '15px' }}>
+                이 좌석의 리뷰 ({reviewsForSeat.length}개)
+              </ReviewTitle>
+              <ReviewList>
+                {reviewsForSeat.map(r => (
+                  <ReviewCard key={r.id}>
+                    <ReviewMetaRow>
+                      <SmallRating>★ {r.rating}</SmallRating>
+                      <span className="review-info">{r.user} · {r.time}</span>
+                    </ReviewMetaRow>
+                    {r.title && (
+                      <ReviewText style={{ fontWeight: 700, marginBottom: 4 }}>
+                        {r.title}
+                      </ReviewText>
+                    )}
+                    <ReviewText>{r.text}</ReviewText>
+                  </ReviewCard>
+                ))}
+              </ReviewList>
+            </>
+          )}
+        </ModalListWrapper>
         {reviewModalOpen && (
           <ReviewForm
             seatId={selectedSeat}
