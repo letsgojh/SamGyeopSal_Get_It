@@ -2,11 +2,33 @@ const charlotteLayout = [
   // 1열은 'STAGE'로 채워서 무대를 표시
   ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
   // 2열은 실제 좌석과 복도(null)
-  ['A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10'],
-  ['B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12'],
-  ['C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14'],
-  ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', null, 'D7', 'D8', 'D9', 'D10', null, 'D11', 'D12', 'D13', 'D14', 'D15', 'D16']
+  [null, null, null, 'A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10', null, null, null,],
+  [null, null, 'B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12', null, null,],
+  [null, 'C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14', null,],
+  ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', null, 'D7', 'D8', 'D9', 'D10', null, 'D11', 'D12', 'D13', 'D14', 'D15', 'D16'],
+  ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', null, 'E7', 'E8', 'E9', 'E10', null, 'E11', 'E12', 'E13', 'E14', 'E15', 'E16'],
+  ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', null, 'F7', 'F8', 'F9', 'F10', null, 'F11', 'F12', 'F13', 'F14', 'F15', 'F16'],
+  ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', null, 'G7', 'G8', 'G9', 'G10', null, 'G11', 'G12', 'G13', 'G14', 'G15', 'G16'],
   // ... (이하 생략)
+];
+
+const sejongLayout = [
+  ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
+  [null, null, null, 'A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10', null, null, null,],
+  [null, null, 'B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12', null, null,],
+  [null, 'C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14', null,],
+  ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', null, 'D7', 'D8', 'D9', 'D10', null, 'D11', 'D12', 'D13', 'D14', 'D15', 'D16'],
+  ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', null, 'E7', 'E8', 'E9', 'E10', null, 'E11', 'E12', 'E13', 'E14', 'E15', 'E16'],
+];
+
+const sacLayout = [
+  ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
+  [null, null, null, 'A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10', null, null, null,],
+  [null, null, 'B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12', null, null,],
+  [null, 'C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14', null,],
+  ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', null, 'D7', 'D8', 'D9', 'D10', null, 'D11', 'D12', 'D13', 'D14', 'D15', 'D16'],
+  ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', null, 'E7', 'E8', 'E9', 'E10', null, 'E11', 'E12', 'E13', 'E14', 'E15', 'E16'],
+  ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', null, 'F7', 'F8', 'F9', 'F10', null, 'F11', 'F12', 'F13', 'F14', 'F15', 'F16'],
 ];
 
 export const venues = [
@@ -30,6 +52,7 @@ export const venues = [
     rating: "4.7",
     reviewCount: 512,
     shortDesc: "대형 공연장으로 연극/뮤지컬이 자주 올라옵니다.",
+    seatingLayout: sejongLayout
   },
   {
     id: "sac",
@@ -40,5 +63,6 @@ export const venues = [
     rating: "4.8",
     reviewCount: 892,
     shortDesc: "클래식에 최적화된 음향을 자랑하는 콘서트홀입니다.",
+    seatingLayout: sacLayout
   },
 ];
