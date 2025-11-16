@@ -214,6 +214,13 @@ export default function VenueDetail() {
         title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰"}
       >
         {/* (1) 이 좌석의 리뷰 목록 */}
+        {reviewModalOpen && (
+          <ReviewForm
+            seatId={selectedSeat}
+            onSubmit={handleAddReview}
+          />
+        )}
+        <br></br>
         <ModalListWrapper>
           {reviewsForSeat.length === 0 ? (
             <div className="empty-message">
@@ -243,12 +250,6 @@ export default function VenueDetail() {
             </>
           )}
         </ModalListWrapper>
-        {reviewModalOpen && (
-          <ReviewForm
-            seatId={selectedSeat}
-            onSubmit={handleAddReview}
-          />
-        )}
       </Modal>
     </>
   );

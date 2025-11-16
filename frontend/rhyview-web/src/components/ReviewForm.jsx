@@ -6,8 +6,12 @@ import styled from "styled-components";
 // 1. 폼의 스타일을 수정합니다. (테두리, 그림자 등 제거)
 const FormWrapper = styled.form`
   background: #fff;
-  border-top: 1px solid var(--line); /* 👈 목록과 구분을 위한 상단 선 */
-  padding: 20px;
+  border-bottom: 1px solid var(--line); /* 👈 목록과 구분을 위한 상단 선 */
+  padding: 0 20px 20px;
+//   리뷰 작성하는 부분이 밑에 가있는게 나으면 :padding: 20px;
+//   그리고 border-botton -> border-top 으로 바꾸고
+//   22번째 줄을 지운다.
+
   /* _Remove_: border, border-radius, margin-bottom */
 `;
 
@@ -15,6 +19,7 @@ const Title = styled.h4`
   font-size: 16px;
   font-weight: 700;
   margin: 0 0 16px;
+  padding-top: 10px;
 `;
 
 // 👈 2. FieldGrid 컴포넌트는 이제 필요 없습니다. (삭제)
