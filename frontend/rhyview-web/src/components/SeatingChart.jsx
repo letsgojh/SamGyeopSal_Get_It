@@ -1,53 +1,52 @@
+// src/components/SeatingChart.jsx
+
 import React from "react";
 import styled from "styled-components";
-
-// 좌우 스크롤을 위한 래퍼
-const ScrollWrapper = styled.div`
-  overflow-x: auto; /* 좌우 스크롤 활성화 */
-  padding: 16px;
-  background: #f9fafb;
-`;
-
-// 스크롤이 되려면 내부에 이 컴포넌트가 display: inline-block이어야 함
-const ChartGrid = styled.div`
-  display: inline-block; /* 내용물 크기만큼만 너비 차지 */
-  padding: 10px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-`;
 
 // 무대 스타일
 const Stage = styled.div`
   text-align: center;
   font-weight: 600;
-  padding: 10px;
+  padding: 8px; /* 크기 축소 */
   background: #4b5563;
   color: white;
   border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  letter-spacing: 2px;
+  margin-bottom: 8px; /* 크기 축소 */
+  font-size: 11px; /* 크기 축소 */
+  letter-spacing: 1px;
 `;
 
-// 좌석 한 줄(row)
-const Row = styled.div`
-  display: flex; /* 좌석들을 가로로 나열 */
-  justify-content: center;
-  margin-bottom: 4px; /* 줄 간격 */
+// 반응형 그리드 컨테이너
+const Grid = styled.div`
+  display: grid;
+  /* grid-template-columns: 
+    레이아웃의 1번째 줄(0번째는 STAGE)의 '열 개수'만큼 
+    'minmax(0, 1fr)' (최소 0, 최대 1fr)로 컬럼을 나눕니다.
+    => 모든 열이 동일한 너비를 가지며 컨테이너에 꽉 참
+  */
+  grid-template-columns: ${({ cols }) => `repeat(${cols}, minmax(0, 1fr))`};
+  gap: 3px; /* 좌석 사이의 최소 간격 */
+  width: 100%;
 `;
 
 // 좌석 버튼
 const SeatButton = styled.button`
-  width: 32px;
-  height: 32px;
-  margin: 0 2px;
-  font-size: 10px;
+  /* 1:1 비율을 유지 (정사각형) */
+  aspect-ratio: 1 / 1; 
+  
+  /* 폰트 크기를 매우 작게 하고, 너비에 따라 조절 */
+  font-size: clamp(6px, 1.5vw, 10px); 
+  
   border: 1px solid var(--brand);
   background: #eef2ff;
   color: var(--brand);
-  border-radius: 6px;
+  border-radius: 4px; /* 크기 축소 */
   cursor: pointer;
+  padding: 0; /* 패딩 제거 */
+  
+  /* 좌석 번호가 넘칠 경우 숨김 */
+  overflow: hidden; 
+  white-space: nowrap;
   
   &:hover {
     background: var(--brand);
@@ -57,52 +56,46 @@ const SeatButton = styled.button`
 
 // 복도 (빈 공간)
 const EmptySpace = styled.div`
-  width: 32px;
-  height: 32px;
-  margin: 0 2px;
+  aspect-ratio: 1 / 1;
 `;
 
-export default function SeatingChart({ layout }) {
-
-  // 좌석 클릭 시 실행될 함수 (지금은 alert만)
-  const handleSeatClick = (seatId) => {
-    alert(`좌석 ${seatId} 클릭됨!`);
-    // TODO: 나중에 이 좌석의 리뷰를 보여주거나 다른 상호작용 추가
-  };
+export default function SeatingChart({ layout, onSeatClick }) {
+  // 0번째 줄은 STAGE
+  const stageRow = layout[0];
+  // 1번째 줄부터가 실제 좌석
+  const seatRows = layout.slice(1);
+  // 1번째 줄의 길이를 기준으로 컬럼 개수 계산
+  const columnCount = layout[1]?.length || 1;
 
   return (
-    <ScrollWrapper>
-      <ChartGrid>
-        {/* layout 배열을 map으로 돌면서 렌더링 */}
-        {layout.map((row, rowIndex) => {
-          // 0번째 줄은 STAGE로 렌더링
-          if (rowIndex === 0) {
-            return <Stage key={rowIndex}>STAGE</Stage>;
-          }
-          
-          // 나머지 줄은 좌석으로 렌더링
-          return (
-            <Row key={rowIndex}>
-              {row.map((seatId, seatIndex) => {
-                // seatId가 null이면 (복도)
-                if (seatId === null) {
-                  return <EmptySpace key={seatIndex} />;
-                }
-                
-                // seatId가 있으면 (좌석)
-                return (
-                  <SeatButton 
-                    key={seatIndex} 
-                    onClick={() => handleSeatClick(seatId)}
-                  >
-                    {seatId}
-                  </SeatButton>
-                );
-              })}
-            </Row>
-          );
-        })}
-      </ChartGrid>
-    </ScrollWrapper>
+    <div>
+      {/* 0번째 줄의 첫번째 요소가 'STAGE'이면 무대 렌더링 */}
+      {stageRow[0] === 'STAGE' && <Stage>STAGE</Stage>}
+
+      <Grid cols={columnCount}>
+        {/* 1번째 줄부터 map 실행 */}
+        {seatRows.map((row, rowIndex) => (
+          // 각 row의 좌석들을 map 실행
+          row.map((seatId, seatIndex) => {
+            const key = `${rowIndex}-${seatIndex}`;
+            
+            // seatId가 null이면 (복도)
+            if (seatId === null) {
+              return <EmptySpace key={key} />;
+            }
+            
+            // seatId가 있으면 (좌석)
+            return (
+              <SeatButton 
+                key={key} 
+                onClick={() => onSeatClick(seatId)}
+              >
+                {seatId}
+              </SeatButton>
+            );
+          })
+        ))}
+      </Grid>
+    </div>
   );
 }
