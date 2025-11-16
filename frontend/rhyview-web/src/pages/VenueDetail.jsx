@@ -1,8 +1,10 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
+
 import PageHeader from "../components/PageHeader";
 import { venues } from "../data/venues";
+import SeatingChart from "../components/SeatingChart";
 
 const Wrapper = styled.div`
   padding: 24px 32px 32px;
