@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom"; // ❗ Link 컴포넌트 추가
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import Modal from "../components/Modal";
+import { venues } from "../data/venues"; // ❗ venues 데이터 import
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -39,117 +40,52 @@ const Tab = styled.button`
 
 const SearchInput = styled.input`
   flex: 1;
-  min-width: 200px;
-  max-width: 360px;
-  border-radius: 9999px;
   border: 1px solid var(--line);
-  padding: 8px 12px;
+  border-radius: 9999px;
+  padding: 8px 16px;
   font-size: 13px;
+  outline: none;
+  min-width: 200px;
 
-  &:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 1px #2563eb20;
-  }
-
-  @media (max-width: 768px) { max-width: 100%; }
+  &:focus { border-color: #2563eb; }
 `;
 
 const Grid2 = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-
-  @media (max-width: 960px) { grid-template-columns: 1fr; }
+  @media (max-width: 960px){ grid-template-columns: 1fr; }
 `;
 
-// 더미 데이터
-const allReviews = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1527356926125-2e5fdc851644",
-    title: "샤롯데씨어터",
-    subtitle: "서울 송파구",
-    category: "뮤지컬",
-    badge: "뮤지컬",
-    badgeColor: "var(--badge-blue)",
-    period: "⭐ 4.5 (328개 리뷰)",
-    detail:
-      "1층 중간열과 2층 중앙 추천.\n잡기는 힘들어도 시야가 진짜 ㄹㅈㄷ",
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1515165562835-c3b8c2e0b4ad",
-    title: "세종문화회관 대극장",
-    subtitle: "서울 종로구",
-    category: "연극",
-    badge: "연극",
-    badgeColor: "#6366f1",
-    period: "⭐ 4.7 (512개 리뷰)",
-    detail:
-      "무대가 넓고 객석 경사가 완만합니다.\n1층 중앙 12열 이후, 2층 중앙 앞열 ㅊㅊ",
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b",
-    title: "예술의전당 콘서트홀",
-    subtitle: "서울 서초구",
-    category: "콘서트",
-    badge: "콘서트",
-    badgeColor: "#10b981",
-    period: "⭐ 4.8 (892개 리뷰)",
-    detail:
-      "클래식 음향 최적화. 발코니도 균일한 음향이어서 좋았습니다.\n1층 8~15열 강추.",
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4",
-    title: "KSPO DOME",
-    subtitle: "서울 송파구",
-    category: "콘서트",
-    badge: "콘서트",
-    badgeColor: "#10b981",
-    period: "⭐ 4.3 (1204개 리뷰)",
-    detail:
-      "스탠딩은 입장 번호 중요, 지정석 양끝 시야 가림...",
-  },
-  {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14",
-    title: "블루스퀘어",
-    subtitle: "서울 용산구",
-    category: "뮤지컬",
-    badge: "뮤지컬",
-    badgeColor: "var(--badge-blue)",
-    period: "⭐ 4.6 (645개 리뷰)",
-    detail:
-      "좌석 경사가 있어 뒤쪽도 시야 양호.\n3층 측면은 구조물 있어서 잘 안 보임.",
-  },
-];
-
-const tabs = ["전체", "뮤지컬", "콘서트", "연극"];
+// 카테고리별 뱃지 색상을 반환하는 함수
+const getBadgeColor = (category) => {
+  switch (category) {
+    case '뮤지컬': return 'var(--badge-blue)';
+    case '연극': return '#6366f1';
+    case '콘서트': return '#10b981';
+    case '클래식': return '#f59e0b';
+    case '경기장': return '#af0abeff';
+    case '소극장': return '#f59e0b';
+    default: return '#6b7280';
+  }
+};
 
 export default function Reviews() {
+  const tabs = ["전체", "뮤지컬", "콘서트", "연극", "클래식"];
   const [activeTab, setActiveTab] = useState("전체");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState(null);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return allReviews.filter((r) => {
-      const matchCategory = activeTab === "전체" ? true : r.category === activeTab;
-      const matchSearch =
-        q === ""
-          ? true
-          : (r.title + r.subtitle + r.detail).toLowerCase().includes(q);
-      return matchCategory && matchSearch;
-    });
-  }, [activeTab, search]);
+  // ❗ 필터링 로직: 카테고리 & 검색어
+  const filtered = venues.filter((v) => {
+    const matchTab = activeTab === "전체" || v.category === activeTab;
+    const matchSearch = v.name.toLowerCase().includes(search.toLowerCase()) ||
+      v.location.toLowerCase().includes(search.toLowerCase());
+    return matchTab && matchSearch;
+  });
 
   return (
     <>
-      <PageHeader title="공연장 리뷰" desc="카테고리/검색으로 빠르게 찾아보세요." />
-
+      <PageHeader title="공연장 리뷰" desc="공연장별 좌석 리뷰를 확인하세요" />
       <Section>
         <ControlsRow>
           <Tabs>
@@ -158,44 +94,34 @@ export default function Reviews() {
             ))}
           </Tabs>
           <SearchInput
-            placeholder="공연장명, 지역, 키워드 검색"
+            placeholder="공연장명, 지역 검색"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </ControlsRow>
 
         <Grid2>
-          {filtered.map((c) => (
+          {filtered.map((v) => (
+            // ❗ Card를 Link로 변환하여 클릭 시 상세 페이지로 이동
             <Card
-              key={c.id}
-              image={c.image}
-              title={c.title}
-              subtitle={c.subtitle}
-              badge={c.badge}
-              badgeColor={c.badgeColor}
-              period={c.period}
-              onClick={() => setSelected(c)}
+              key={v.id}
+              image={v.image}
+              title={v.name}
+              subtitle={v.location}
+              badge={v.category}
+              badgeColor={getBadgeColor(v.category)}
+              period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
+              as={Link}
+              to={`/venues/${v.id}`}
             />
           ))}
           {filtered.length === 0 && (
-            <div style={{ fontSize: 13, color: "#9ca3af" }}>조건에 맞는 리뷰가 없습니다.</div>
+            <div style={{ fontSize: 13, color: "#9ca3af", gridColumn: "1 / -1", textAlign: "center", padding: "40px 0" }}>
+              조건에 맞는 공연장이 없습니다.
+            </div>
           )}
         </Grid2>
       </Section>
-
-      <Modal open={!!selected} title={selected?.title || ""} onClose={() => setSelected(null)}>
-        {selected && (
-          <>
-            <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 8 }}>
-              {selected.subtitle} · {selected.category}
-            </div>
-            <div style={{ fontSize: 13, color: "#9ca3af", marginBottom: 14 }}>
-              {selected.period}
-            </div>
-            <div style={{ whiteSpace: "pre-line" }}>{selected.detail}</div>
-          </>
-        )}
-      </Modal>
     </>
   );
 }
