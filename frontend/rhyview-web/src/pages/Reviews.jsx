@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom"; // ❗ Link 컴포넌트 추가
+import { useNavigate } from "react-router-dom"; // ❗ Link 컴포넌트 추가
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
 import { venues } from "../data/venues"; // ❗ venues 데이터 import
@@ -57,7 +57,6 @@ const Grid2 = styled.div`
   @media (max-width: 960px){ grid-template-columns: 1fr; }
 `;
 
-// 카테고리별 뱃지 색상을 반환하는 함수
 const getBadgeColor = (category) => {
   switch (category) {
     case '뮤지컬': return 'var(--badge-blue)';
@@ -71,7 +70,9 @@ const getBadgeColor = (category) => {
 };
 
 export default function Reviews() {
-  const tabs = ["전체", "뮤지컬", "콘서트", "연극", "클래식"];
+  const navigate = useNavigate();
+
+  const tabs = ["전체", "뮤지컬", "콘서트", "연극", "클래식", "경기장", "소극장"];
   const [activeTab, setActiveTab] = useState("전체");
   const [search, setSearch] = useState("");
 
@@ -102,7 +103,6 @@ export default function Reviews() {
 
         <Grid2>
           {filtered.map((v) => (
-            // ❗ Card를 Link로 변환하여 클릭 시 상세 페이지로 이동
             <Card
               key={v.id}
               image={v.image}
@@ -111,8 +111,7 @@ export default function Reviews() {
               badge={v.category}
               badgeColor={getBadgeColor(v.category)}
               period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
-              as={Link}
-              to={`/venues/${v.id}`}
+              onClick={() => navigate(`/venues/${v.id}`)}
             />
           ))}
           {filtered.length === 0 && (

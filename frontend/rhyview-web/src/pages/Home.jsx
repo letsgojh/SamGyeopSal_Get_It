@@ -17,6 +17,18 @@ const Grid3 = styled.div`
   @media (max-width: 960px){ grid-template-columns: 1fr; }
 `;
 
+const getBadgeColor = (category) => {
+  switch (category) {
+    case '뮤지컬': return 'var(--badge-blue)';
+    case '연극': return '#6366f1';
+    case '콘서트': return '#10b981';
+    case '클래식': return '#f59e0b';
+    case '경기장': return '#af0abeff';
+    case '소극장': return '#f59e0b';
+    default: return '#6b7280';
+  }
+};
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -63,10 +75,10 @@ export default function Home() {
       <hr style={{ border: 0, borderTop: "1px solid var(--line)" }} />
 
       <Section>
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: 12}}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800 }}>인기 공연장</h3>
           <button
-            style={{ background:"transparent", border:"none", color:"#6b7280", cursor:"pointer", fontSize: 13 }}
+            style={{ background: "transparent", border: "none", color: "#6b7280", cursor: "pointer", fontSize: 13 }}
             onClick={() => navigate("/reviews")}
           >
             전체 리뷰 보기
@@ -80,7 +92,7 @@ export default function Home() {
               title={v.name}
               subtitle={v.location}
               badge={v.category}
-              badgeColor="var(--badge-blue)"
+              badgeColor={getBadgeColor(v.category)}
               period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
               onClick={() => navigate(`/venues/${v.id}`)}
             />
