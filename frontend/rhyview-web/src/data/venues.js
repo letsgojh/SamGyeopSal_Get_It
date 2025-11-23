@@ -108,3 +108,39 @@ export const venues = [
     seatingLayout: bluesquareLayout
   },
 ];
+
+export const hotDeals = [
+  {
+    id: 1, // 찜 기능을 위해 고유 ID 필요
+    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
+    title: "밤하늘 아래 어쿠스틱",
+    subtitle: "카페 뮤직홀 (홍대)",
+    period: "2024.11.08 - 2024.11.10",
+    badge: "30% 할인",
+    badgeColor: "var(--badge-rose)",
+    adImage: "https://i.ibb.co/mJjP0Yd/image-bf923d.png", 
+    adLink: "https://www.ticketlink.co.kr"
+  },
+  {
+    id: 2,
+    image: "https://static.wixstatic.com/media/c64bc2_e2bae231ffb9495291ea3d76ab8ab39e~mv2.jpg/v1/fill/w_722,h_271,al_c,lg_1,q_80,enc_avif,quality_auto/c64bc2_e2bae231ffb9495291ea3d76ab8ab39e~mv2.jpg",
+    title: "소극장 연극 <오필리움 이야기>",
+    subtitle: "아르코예술극장 소극장",
+    period: "2024.11.05 - 2024.11.25",
+    badge: "잔여 45석",
+    badgeColor: "var(--badge-amber)",
+    adImage: "https://i.ibb.co/mJjP0Yd/image-bf923d.png",
+    adLink: "https://www.ticketlink.co.kr"
+  },
+  {
+    id: 3,
+    image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8JUVCJUIwJUI0JUVCJTkzJTlDfGVufDB8fDB8fHww",
+    title: "인디밴드 <달빛오정>",
+    subtitle: "클럽풍류",
+    period: "2024.11.12",
+    badge: "25% 할인 · 잔여 30석",
+    badgeColor: "var(--badge-rose)",
+    adImage: "https://i.ibb.co/mJjP0Yd/image-bf923d.png",
+    adLink: "https://www.ticketlink.co.kr"
+  },
+];

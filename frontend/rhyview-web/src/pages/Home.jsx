@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import { venues } from "../data/venues";
+import { venues, hotDeals } from "../data/venues";
+import Modal from "../components/Modal";
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -31,36 +32,7 @@ const getBadgeColor = (category) => {
 
 export default function Home({ favorites = [], onToggleFavorite }) {
   const navigate = useNavigate();
-
-  const hot = [
-    {
-      id: 1,
-      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
-      title: "밤하늘 아래 어쿠스틱",
-      subtitle: "카페 뮤직홀 (홍대)",
-      period: "2024.11.08 - 2024.11.10",
-      badge: "30% 할인",
-      badgeColor: "var(--badge-rose)",
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1515165562835-c3b8c2e0b4ad",
-      title: "소극장 연극 <우리들의 이야기>",
-      subtitle: "아르코예술극장 소극장",
-      period: "2024.11.05 - 2024.11.25",
-      badge: "잔여 45석",
-      badgeColor: "var(--badge-amber)",
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-      title: "인디밴드 <달빛요정역전만루홈런>",
-      subtitle: "롤링홀",
-      period: "2024.11.12",
-      badge: "25% 할인 · 잔여 30석",
-      badgeColor: "var(--badge-rose)",
-    },
-  ];
+  const [selectedAd, setSelectedAd] = useState(null);
 
   return (
     <>
@@ -69,9 +41,14 @@ export default function Home({ favorites = [], onToggleFavorite }) {
       <Section>
         <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>놓치지 마세요</h3>
         <Grid3>
-          {hot.map((c) => (
-            <Card key={c.id} {...c} onClick={() => console.log("hot:", c.title)} isFavorite={favorites.includes(c.id)}
-              onToggleFavorite={onToggleFavorite} />
+          {hotDeals.map((c) => (
+            <Card
+              key={c.id}
+              {...c}
+              onClick={() => setSelectedAd(c)}
+              isFavorite={favorites.includes(c.id)}
+              onToggleFavorite={onToggleFavorite}
+            />
           ))}
         </Grid3>
       </Section>
@@ -106,6 +83,22 @@ export default function Home({ favorites = [], onToggleFavorite }) {
           ))}
         </Grid3>
       </Section>
+
+      <Modal
+        open={!!selectedAd}
+        onClose={() => setSelectedAd(null)}
+        title={selectedAd?.title || "광고"}
+      >
+        {selectedAd && (
+          <a href={selectedAd.adLink} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+            <img
+              src={selectedAd.adImage}
+              alt={selectedAd.title}
+              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+            />
+          </a>
+        )}
+      </Modal>
     </>
   );
 }
