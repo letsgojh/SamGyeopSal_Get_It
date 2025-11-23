@@ -55,14 +55,26 @@ const getBadgeColor = (category) => {
 export default function Favorites({ favorites, onToggleFavorite }) {
     const navigate = useNavigate();
 
+    // venues, hotDeals를 묶은 리스트
     const allItems = [...hotDeals, ...venues];
-    const favoriteVenues = allItems.filter((v) => favorites.includes(v.id));
+    const favoriteVenues = allItems.filter((v) => favorites.includes(v.id));    // id
 
-    // 아이템이 공연장인지 확인하는 헬퍼 함수 (category가 있으면 공연장)
+    // 아이템이 공연장인지 확인하는 함수 (category가 있으면 공연장)
     const isVenue = (item) => !!item.category;
 
     // 팝업 상태 관리
     const [selectedAd, setSelectedAd] = useState(null);
+
+    // 클릭 핸들러 통합 (여기서 분기 처리)
+    const handleCardClick = (item) => {
+        if (item.category) {
+            // 카테고리가 있으면 공연장 -> 상세 페이지 이동
+            navigate(`/venues/${item.id}`);
+        } else {
+            // 카테고리가 없으면 핫딜(광고) -> 모달 오픈
+            setSelectedAd(item);
+        }
+    };
 
     return (
         <>
@@ -75,21 +87,14 @@ export default function Favorites({ favorites, onToggleFavorite }) {
                                 key={v.id}
                                 id={v.id}
                                 image={v.image}
-                                title={v.title || v.name} // hotDeals는 title, venues는 name을 쓸 수 있으므로 둘 다 체크
-                                subtitle={v.subtitle || v.location} // 마찬가지로 subtitle 또는 location
-                                badge={v.badge || v.category} // badge 또는 category
-                                badgeColor={v.badgeColor || getBadgeColor(v.category)}
+                                title={v.title || v.name} // hotDeals는 title, venues는 name
+                                subtitle={v.subtitle || v.location} // hotDeals는 subtitle, venues는 location
+                                badge={v.badge || v.category} // hotDeals는 badge, venues는 category
+                                badgeColor={v.badgeColor || getBadgeColor(v.category)}  // hotDeals는 색깔을 변수로 가짐. venues는 카테고리에 따라 색깔 다르게 가짐
                                 period={v.period || `⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
 
-                                // hotDeals인지 venues인지에 따라 클릭 동작 분기 (선택 사항)
-                                // 여기서는 간단히 venues인 경우만 상세 페이지로 가도록 예시 작성
-                                // 실제로는 hotDeals 클릭 시 팝업을 띄우거나 할 수 있지만, 
-                                // 찜 목록에서는 보통 상세 페이지로 이동하거나 아무 동작 안 하게 할 수도 있습니다.
-                                as={v.category ? Link : "div"}
-                                to={v.category ? `/venues/${v.id}` : undefined}
-
-                                onClick={isVenue(v) ? undefined : () => setSelectedAd(v)}
-
+                                // hotDeals인지 venues인지에 따라, 클릭 시 다르게 작동
+                                onClick={() => handleCardClick(v)}
                                 isFavorite={true}
                                 onToggleFavorite={onToggleFavorite}
                             />
