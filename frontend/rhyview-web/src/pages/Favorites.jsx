@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
@@ -52,8 +52,19 @@ const getBadgeColor = (category) => {
     }
 };
 
-export default function Favorites({ favorites, onToggleFavorite }) {
+export default function Favorites({ favorites, onToggleFavorite, user }) {
     const navigate = useNavigate();
+
+    // 페이지 진입 시 로그인 체크
+    useEffect(() => {
+        if (!user) {
+            navigate("/");
+            alert("로그인 후 이용해주세요.");
+        }
+    }, [user, navigate]);
+
+    // user 없을 땐 아무것도 렌더링X
+    if (!user) return null;
 
     // venues, hotDeals를 묶은 리스트
     const allItems = [...hotDeals, ...venues];
@@ -112,7 +123,7 @@ export default function Favorites({ favorites, onToggleFavorite }) {
                 onClose={() => setSelectedAd(null)}
                 title={selectedAd?.title || "광고"}
             >
-                {selectedAd && (
+                {selectedAd && (    // selectedAd가 true이면 팝업이 뜸
                     <a href={selectedAd.adLink} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
                         <img
                             src={selectedAd.adImage}
