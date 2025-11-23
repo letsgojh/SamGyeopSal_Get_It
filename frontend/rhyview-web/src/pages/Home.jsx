@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
@@ -29,11 +29,12 @@ const getBadgeColor = (category) => {
   }
 };
 
-export default function Home() {
+export default function Home({ favorites = [], onToggleFavorite }) {
   const navigate = useNavigate();
 
   const hot = [
     {
+      id: 1,
       image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
       title: "밤하늘 아래 어쿠스틱",
       subtitle: "카페 뮤직홀 (홍대)",
@@ -42,6 +43,7 @@ export default function Home() {
       badgeColor: "var(--badge-rose)",
     },
     {
+      id: 2,
       image: "https://images.unsplash.com/photo-1515165562835-c3b8c2e0b4ad",
       title: "소극장 연극 <우리들의 이야기>",
       subtitle: "아르코예술극장 소극장",
@@ -50,6 +52,7 @@ export default function Home() {
       badgeColor: "var(--badge-amber)",
     },
     {
+      id: 3,
       image: "https://images.unsplash.com/photo-1483985988355-763728e1935b",
       title: "인디밴드 <달빛요정역전만루홈런>",
       subtitle: "롤링홀",
@@ -66,8 +69,9 @@ export default function Home() {
       <Section>
         <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>놓치지 마세요</h3>
         <Grid3>
-          {hot.map((c, i) => (
-            <Card key={i} {...c} onClick={() => console.log("hot:", c.title)} />
+          {hot.map((c) => (
+            <Card key={c.id} {...c} onClick={() => console.log("hot:", c.title)} isFavorite={favorites.includes(c.id)}
+              onToggleFavorite={onToggleFavorite} />
           ))}
         </Grid3>
       </Section>
@@ -88,6 +92,7 @@ export default function Home() {
           {venues.map((v) => (
             <Card
               key={v.id}
+              id={v.id}
               image={v.image}
               title={v.name}
               subtitle={v.location}
@@ -95,6 +100,8 @@ export default function Home() {
               badgeColor={getBadgeColor(v.category)}
               period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
               onClick={() => navigate(`/venues/${v.id}`)}
+              isFavorite={favorites.includes(v.id)}
+              onToggleFavorite={onToggleFavorite}
             />
           ))}
         </Grid3>

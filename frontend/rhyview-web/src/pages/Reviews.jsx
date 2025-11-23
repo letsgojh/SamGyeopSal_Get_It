@@ -69,7 +69,7 @@ const getBadgeColor = (category) => {
   }
 };
 
-export default function Reviews() {
+export default function Reviews( {favorites = [], onToggleFavorite} ) {
   const navigate = useNavigate();
 
   const tabs = ["전체", "뮤지컬", "콘서트", "연극", "클래식", "경기장", "소극장"];
@@ -105,6 +105,7 @@ export default function Reviews() {
           {filtered.map((v) => (
             <Card
               key={v.id}
+              id={v.id}
               image={v.image}
               title={v.name}
               subtitle={v.location}
@@ -112,6 +113,8 @@ export default function Reviews() {
               badgeColor={getBadgeColor(v.category)}
               period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
               onClick={() => navigate(`/venues/${v.id}`)}
+              isFavorite={favorites.includes(v.id)}
+              onToggleFavorite={onToggleFavorite}
             />
           ))}
           {filtered.length === 0 && (
