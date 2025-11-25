@@ -8,6 +8,7 @@ export const showAllShows = async (req,res,next)=>{
         const [rows] = await pool.query("SELECT * FROM shows");
         res.status(200).json({data : rows});
     }catch(err){
+        console.log("Error : ", err);
         next(new HttpError(500,"Internal Error"));
     }
 }
@@ -33,7 +34,7 @@ export const showDetailshow = async (req,res,next)=>{
 
 //카테고리별 쇼 조회
 export const checkCategoricalShow = async(req,res,next)=>{
-        const category = req.params.category; // 예: /shows/category/musical
+        const category = req.query.category; // 예: /shows/category/musical
 
     try {
         const [rows] = await pool.query(

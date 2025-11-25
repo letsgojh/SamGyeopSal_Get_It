@@ -13,7 +13,7 @@ export const showSeatByShow = async(req,res,next) => {
         const [rows] = await pool.execute("SELECT * FROM seats WHERE venue_id = ?",[id]);
         
         if (rows.length === 0) {
-            return res.status(404).json({ data: "No seats found for this venue" });
+            return res.status(404).json({ data: "No reviews found for this seat" });
         }
         
         res.status(200).json({data : rows});
@@ -27,7 +27,7 @@ export const showReviewBySeat = async(req,res,next)=>{
     const showId = Number(req.params.id);
     const seatId = Number(req.params.seatId);
 
-    if(!id || !seatId){
+    if(!showId || !seatId){
       return res.status(404).json({data : "There is no content"});
     }
 
