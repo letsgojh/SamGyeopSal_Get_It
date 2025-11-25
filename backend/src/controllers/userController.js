@@ -170,7 +170,7 @@ export const seeUserFavoriteShows = async(req,res,next) =>{
 //찜 제거
 export const deleteUserFavoriteShows = async(req,res,next) =>{
     const userId = req.user?.id;
-    const showId = Number(req.params.show_id); 
+    const showId = Number(req.params.showid); 
     
     if (!userId || isNaN(showId)) {
         return next(new HttpError(400, "Invalid data"));
