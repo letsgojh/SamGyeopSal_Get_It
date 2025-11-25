@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();;
 
 import express from 'express';
+import {specs, swaggerUi} from "./swagger.js";
 import indexRouter from "./routes/index.js";
 import {logger} from "./middlewares/logger.js";
 import { delay } from './middlewares/delay.js';
@@ -20,7 +21,8 @@ app.use(cors());
 app.use(morgan('tiny'));
 
 app.use(express.json());
-app.use('/api',indexRouter);
+app.use("/api",swaggerUi.serve,swaggerUi.setup(specs));
+app.use('/',indexRouter);
 
 app.listen(PORT,() =>{
     console.log(`Server is Running on http://localhost:${PORT}`);
