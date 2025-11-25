@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
+import { Send } from "lucide-react"; // Send 아이콘 사용
 
 const Section = styled.section`
   padding: 24px 32px 32px;
@@ -48,22 +49,34 @@ const CommentCard = styled.div` border-radius:12px; border:1px solid #e5e7eb; ba
 const CommentMeta = styled.div` font-size:11px; color:#9ca3af; margin-bottom:4px; `;
 const CommentText = styled.div` font-size:13px; color:#374151; `;
 
+// 👇 [추가됨] 댓글 입력 폼 스타일
+const CommentForm = styled.form`
+  display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f3f4f6;
+`;
+const CommentInput = styled.input`
+  flex: 1; padding: 10px 12px; border-radius: 99px; border: 1px solid var(--line);
+  font-size: 13px; background: #fff;
+  &:focus { outline: 2px solid var(--brand); border-color: transparent; }
+`;
+const SubmitBtn = styled.button`
+  background: var(--brand); color: white; border: none; border-radius: 50%;
+  width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; &:hover { opacity: 0.9; }
+`;
+
 const artistPosts = [
   { id: 1, artist: "달빛요정역전만루홈런", role: "인디밴드", title: "12월 단독 공연 셋리스트 공개 ✨", time: "1시간 전",
     preview: "12월 단독 공연 준비 중! 셋리스트 조금만 공개해요. 어떤 곡 기대하세요?", likes: 128, comments: 42 },
   { id: 2, artist: "우리들의 이야기", role: "연극 배우", title: "오늘도 연습", time: "3시간 전",
     preview: "연습 막바지! 무대에서 만나요. 여러분은 어느 좌석에서 보시나요?", likes: 89, comments: 27 },
-  /*{ id: 3, artist: "클래식", role: "클래식 공연 어쩌구...", title: "리허설 후기", time: "어제",
-    preview: "연주곡 리스트는 곧 공개! 송년회 연주회 어쩌구...", likes: 64, comments: 19 },*/
 ];
 
 const schedule = [
   { id: 1, title:"달빛요정역전만루홈런 연말 단독 공연", date:"2024.12.21 (토) 19:00", venue:"롤링홀", tag:"콘서트" },
   { id: 2, title:"연극 <우리들의 이야기>", date:"2024.12.03 (화) ~ 12.30 (월)", venue:"샤롯데씨어터", tag:"연극" },
-  /*{ id: 3, title:"클래식 겨울 연주회", date:"2025.12.10 (금) 19:30", venue:"예술의전당 콘서트홀", tag:"클래식" },*/
 ];
 
-const commentsByPostId = {
+const initialComments = {
   1: [
     { user:"daisy", time:"10분 전", text:"오프닝으로 <은하수 아래서> 듣고 싶어요!" },
     { user:"moonchild", time:"25분 전", text:"이번에도 응원봉 들고 갑니다 ✨" },
@@ -72,9 +85,42 @@ const commentsByPostId = {
   3: [ { user:"classicfan", time:"어제", text:"2층 중앙 예매 완료! 기대됩니다." } ],
 };
 
-export default function Community(){
+// 👇 user prop 추가
+export default function Community({ user }) {
   const [selectedPost, setSelectedPost] = useState(null);
-  const comments = (selectedPost && commentsByPostId[selectedPost.id]) || [];
+  
+  // 👇 댓글 상태 관리 (기존 데이터를 초기값으로 사용)
+  const [allComments, setAllComments] = useState(initialComments);
+  const [inputText, setInputText] = useState("");
+
+  // 현재 선택된 포스트의 댓글 가져오기
+  const comments = (selectedPost && allComments[selectedPost.id]) || [];
+
+  // 👇 댓글 등록 핸들러
+  const handleAddComment = (e) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+
+    // 로그인 체크
+    if (!user) {
+      alert("로그인 후 댓글을 작성할 수 있습니다.");
+      return;
+    }
+
+    const newComment = {
+      user: user.name, // 로그인한 유저 이름
+      time: "방금 전",
+      text: inputText
+    };
+
+    // 상태 업데이트
+    setAllComments(prev => ({
+      ...prev,
+      [selectedPost.id]: [...(prev[selectedPost.id] || []), newComment]
+    }));
+
+    setInputText(""); // 입력창 초기화
+  };
 
   return (
     <>
@@ -96,7 +142,8 @@ export default function Community(){
                 <FeedBody>{post.preview}</FeedBody>
                 <FeedFooter>
                   <span>❤️ {post.likes}</span>
-                  <span>💬 {post.comments}</span>
+                  {/* 👇 실시간 댓글 개수 반영 */}
+                  <span>💬 {allComments[post.id] ? allComments[post.id].length : post.comments}</span>
                 </FeedFooter>
               </FeedCard>
             ))}
@@ -128,19 +175,31 @@ export default function Community(){
             </div>
 
             <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>팬 댓글</div>
-            {comments.length === 0
-              ? <div style={{ fontSize: 12, color: "#9ca3af" }}>아직 댓글이 없습니다.</div>
-              : (
-                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  {comments.map((c, i)=>(
+            
+            <CommentList>
+              {comments.length === 0
+                ? <div style={{ fontSize: 12, color: "#9ca3af", padding: "10px 0" }}>아직 댓글이 없습니다.</div>
+                : comments.map((c, i)=>(
                     <CommentCard key={i}>
                       <CommentMeta>{c.user} · {c.time}</CommentMeta>
                       <CommentText>{c.text}</CommentText>
                     </CommentCard>
-                  ))}
-                </div>
-              )
-            }
+                  ))
+              }
+            </CommentList>
+
+            {/* 👇 댓글 입력 폼 추가 */}
+            <CommentForm onSubmit={handleAddComment}>
+              <CommentInput 
+                placeholder={user ? "댓글을 남겨보세요..." : "로그인 후 댓글을 남길 수 있습니다."}
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                disabled={!user} // 비로그인 시 입력 막기 (선택사항, UX따라 풀어둬도 됨)
+              />
+              <SubmitBtn type="submit">
+                <Send size={16} />
+              </SubmitBtn>
+            </CommentForm>
           </>
         )}
       </Modal>

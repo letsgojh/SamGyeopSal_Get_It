@@ -1,7 +1,47 @@
 import React from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { Home, Star, MessageSquare, Heart, Ticket } from "lucide-react";
+import { Home, Star, MessageSquare, Heart, Ticket, LogIn, LogOut } from "lucide-react";
+
+// 하단 프로필 영역 스타일
+const ProfileArea = styled.div`
+  margin-top: auto; /* 사이드바 맨 아래로 밀기 */
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const ProfileBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #374151;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover { background: #f4f4f5; }
+
+  /* 반응형: 아이콘만 보이기 */
+  @media (max-width: 768px) {
+    justify-content: center;
+    padding: 10px 0;
+    span { display: none; }
+    .user-info { display: none; }
+  }
+`;
+
+const UserAvatar = styled.img`
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #eee;
+`;
 
 const Aside = styled.aside`
   width: 240px;
@@ -59,18 +99,7 @@ const Item = styled(NavLink)`
   }
 `;
 
-const Footer = styled.div`
-  position: absolute;
-  bottom: 16px;
-  left: 12px;
-  right: 12px;
-  font-size: 11px;
-  color: #9ca3af;
-
-  @media (max-width: 768px) { display:none; }
-`;
-
-export default function Sidebar() {
+export default function Sidebar({ user, onLoginClick, onLogoutClick }) {
   return (
     <Aside>
       <BrandLink to="/" end>
@@ -78,13 +107,45 @@ export default function Sidebar() {
         <span>Rhyview</span>
       </BrandLink>
 
-      <Item to="/" end><Home size={16}/><span>홈</span></Item>
-      <Item to="/reviews"><Star size={16}/><span>리뷰</span></Item>
-      <Item to="/community"><MessageSquare size={16}/><span>커뮤니티</span></Item>
-      <Item to="/favorites"><Heart size={16}/><span>찜</span></Item>
-      <Item to="/ticket"><Ticket size={16}/><span>티켓</span></Item>
+      <div style={{ flex: 1 }}>
+        <Item to="/" className={({ isActive }) => (isActive ? "active" : "")}>
+          <Home size={16} />
+          <span>홈</span>
+        </Item>
+        <Item to="/reviews" className={({ isActive }) => (isActive ? "active" : "")}>
+          <Star size={16} />
+          <span>리뷰</span>
+        </Item>
+        <Item to="/community" className={({ isActive }) => (isActive ? "active" : "")}>
+          <MessageSquare size={16} />
+          <span>커뮤니티</span>
+        </Item>
+        <Item to="/favorites" className={({ isActive }) => (isActive ? "active" : "")}>
+          <Heart size={16} />
+          <span>찜 목록</span>
+        </Item>
+        <Item to="/ticket"><Ticket size={16} /><span>티켓</span></Item>
+      </div>
 
-      <Footer>김** · 1,250 뷰</Footer>
+      {/* 로그인 부분 */}
+      <ProfileArea>
+        {user ? (
+          <ProfileBtn onClick={onLogoutClick}>
+            <UserAvatar src={user.avatar} alt="user" />
+            <div className="user-info" style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontWeight: 600 }}>{user.name}</span>
+              <span style={{ fontSize: 11, color: "#9ca3af" }}>로그아웃</span>
+            </div>
+            {/* 모바일에서는 로그아웃 아이콘만 보임 */}
+            <LogOut size={20} className="mobile-only" style={{ display: "none" }} />
+          </ProfileBtn>
+        ) : (
+          <ProfileBtn onClick={onLoginClick}>
+            <LogIn size={20} />
+            <span>로그인</span>
+          </ProfileBtn>
+        )}
+      </ProfileArea>
     </Aside>
   );
 }
