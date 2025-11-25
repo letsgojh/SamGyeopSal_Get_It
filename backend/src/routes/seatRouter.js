@@ -20,7 +20,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/seats/shows/{id}/seats:
+ * /seats/shows/{id}/seats:
  *   get:
  *     summary: 특정 공연의 좌석 목록 조회
  *     tags: [Seats]
@@ -43,7 +43,7 @@ router.get("/shows/:id/seats", showSeatByShow);
 
 /**
  * @swagger
- * /api/seats/shows/{id}/seats/{seatId}/reviews:
+ * /seats/shows/{id}/seats/{seatId}/reviews:
  *   get:
  *     summary: 특정 공연의 특정 좌석에 대한 리뷰 목록 조회
  *     tags: [Seats]
@@ -72,7 +72,7 @@ router.get("/shows/:id/seats/:seatId/reviews", showReviewBySeat);
 
 /**
  * @swagger
- * /api/seats/shows/{id}/seats/{seatId}/reviews:
+ * /seats/shows/{id}/seats/{seatId}/reviews:
  *   post:
  *     summary: 특정 좌석에 리뷰 작성
  *     tags: [Seats]
@@ -118,7 +118,7 @@ router.post("/shows/:id/seats/:seatId/reviews", authMiddleware, writeSeatReview)
 
 /**
  * @swagger
- * /api/seats/reviews/{id}:
+ * /seats/reviews/{id}:
  *   put:
  *     summary: 좌석 리뷰 수정
  *     tags: [Seats]
@@ -156,7 +156,7 @@ router.put("/reviews/:id", authMiddleware, updateSeatReview);
 
 /**
  * @swagger
- * /api/seats/reviews/{id}:
+ * /seats/reviews/{id}:
  *   delete:
  *     summary: 좌석 리뷰 삭제
  *     tags: [Seats]

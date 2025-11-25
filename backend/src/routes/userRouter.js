@@ -21,7 +21,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/users/signup:
+ * /users/signup:
  *   post:
  *     summary: 회원가입
  *     tags: [Users]
@@ -34,13 +34,13 @@ const router = Router();
  *             required:
  *               - email
  *               - password
- *               - nickname
+ *               - name
  *             properties:
+ *               name:
+ *                 type: string
  *               email:
  *                 type: string
  *               password:
- *                 type: string
- *               nickname:
  *                 type: string
  *     responses:
  *       201:
@@ -53,7 +53,7 @@ router.post("/signup", signup);
 
 /**
  * @swagger
- * /api/users/login:
+ * /users/login:
  *   post:
  *     summary: 로그인
  *     tags: [Users]
@@ -82,7 +82,7 @@ router.post("/login", login);
 
 /**
  * @swagger
- * /api/users/me:
+ * /users/me:
  *   get:
  *     summary: 내 정보 조회
  *     security:
@@ -100,7 +100,7 @@ router.get("/me", authMiddleware, getMe);
 
 /**
  * @swagger
- * /api/users/favorites:
+ * /users/favorites:
  *   get:
  *     summary: 사용자가 좋아요한 쇼 목록 조회
  *     security:
@@ -117,7 +117,7 @@ router.get("/favorites", authMiddleware, addFavoriteShow);
 
 /**
  * @swagger
- * /api/users/favorites/{showId}:
+ * /users/favorites/{showId}:
  *   post:
  *     summary: 특정 쇼 좋아요 추가
  *     security:
@@ -141,7 +141,7 @@ router.post("/favorites/:showId", authMiddleware, seeUserFavoriteShows);
 
 /**
  * @swagger
- * /api/users/favorites/{showId}:
+ * /users/favorites/{showId}:
  *   delete:
  *     summary: 특정 쇼 좋아요 삭제
  *     security:
