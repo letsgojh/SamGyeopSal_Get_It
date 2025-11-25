@@ -111,7 +111,7 @@ export const getMe = async (req,res,next)=>{
 //공연 찜 추가
 export const addFavoriteShow = async(req,res,next) =>{
     const userId = req.user?.id;
-    const showId = Number(req.body.show_id);
+    const showId = Number(req.body.show_Id);
 
 
     if (!userId || isNaN(showId)) {
@@ -170,7 +170,7 @@ export const seeUserFavoriteShows = async(req,res,next) =>{
 //찜 제거
 export const deleteUserFavoriteShows = async(req,res,next) =>{
     const userId = req.user?.id;
-    const showId = Number(req.params.showid); 
+    const showId = Number(req.params.showId); 
     
     if (!userId || isNaN(showId)) {
         return next(new HttpError(400, "Invalid data"));

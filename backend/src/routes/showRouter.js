@@ -19,20 +19,20 @@ const router = Router();
 
 /**
  * @swagger
- * /api/shows:
+ * /shows:
  *   get:
  *     summary: 전체 공연 목록 조회
  *     tags: [Shows]
  *     responses:
  *       200:
- *         description: 전체 공연 리스트 반환
+ *         description: "전체 공연 리스트 반환"
  */
 router.get("/", showAllShows);
 
 
 /**
  * @swagger
- * /api/shows/{id}:
+ * /shows/{id}:
  *   get:
  *     summary: 특정 공연 상세 조회
  *     tags: [Shows]
@@ -54,7 +54,7 @@ router.get("/:id", showDetailshow);
 
 /**
  * @swagger
- * /api/shows/category:
+ * /shows/category:
  *   get:
  *     summary: 카테고리별 공연 조회
  *     tags: [Shows]
@@ -64,7 +64,7 @@ router.get("/:id", showDetailshow);
  *         required: true
  *         schema:
  *           type: string
- *         description: 공연 카테고리 (예: musical, concert, play)
+ *         description: "공연 카테고리 (예: musical, concert, play)"
  *     responses:
  *       200:
  *         description: 해당 카테고리의 공연 목록 반환
@@ -76,7 +76,7 @@ router.get("/category", checkCategoricalShow);
 
 /**
  * @swagger
- * /api/shows/operations/recommended:
+ * /shows/operations/recommended:
  *   get:
  *     summary: 추천 공연 조회
  *     tags: [Shows]
@@ -89,7 +89,7 @@ router.get("/operations/recommended", showRecommendShow);
 
 /**
  * @swagger
- * /api/shows/search:
+ * /shows/search:
  *   get:
  *     summary: 공연 검색
  *     tags: [Shows]
@@ -99,12 +99,12 @@ router.get("/operations/recommended", showRecommendShow);
  *         required: true
  *         schema:
  *           type: string
- *         description: 검색 키워드
+ *         description: "검색 키워드"
  *     responses:
  *       200:
- *         description: 키워드와 일치하는 공연 리스트 반환
+ *         description: "키워드와 일치하는 공연 리스트 반환"
  *       400:
- *         description: 검색 키워드 누락
+ *         description: "검색 키워드 누락"
  */
 router.get("/search", searchShow);
 

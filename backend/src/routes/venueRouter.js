@@ -17,7 +17,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/venues:
+ * /venues:
  *   get:
  *     summary: 공연장 목록 전체 조회
  *     tags: [Venues]
@@ -30,7 +30,7 @@ router.get("/", showVenuesList);
 
 /**
  * @swagger
- * /api/venues/{id}:
+ * /venues/{id}:
  *   get:
  *     summary: 특정 공연장 상세 조회
  *     tags: [Venues]
@@ -52,7 +52,7 @@ router.get("/:id", showDetailVenue);
 
 /**
  * @swagger
- * /api/venues/{id}/shows:
+ * /venues/{id}/shows:
  *   get:
  *     summary: 특정 공연이 열리는 공연장 정보 조회
  *     tags: [Venues]
