@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();;
 
+import pool from './config/db.js';
 import express from 'express';
 import {specs, swaggerUi} from "./swagger.js";
 import indexRouter from "./routes/index.js";
@@ -13,6 +14,17 @@ import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+async function test(){
+    try{
+        const [rows] = await pool.query("SELECT 1");
+        console.log("DB 연결 성공")
+    }catch(err){
+        console.error("DB 연결 실패");
+    }
+}
+
+test()
 
 app.use(logger); //모든 요청에 로깅 적용
 app.use('/test',delay); //test 경로에만 지연적용

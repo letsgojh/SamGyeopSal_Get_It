@@ -66,18 +66,20 @@ export default function Home({ favorites = [], onToggleFavorite }) {
           </button>
         </div>
         <Grid3>
-          {venues.map((v) => (
+          {venues.map((show) => (
             <Card
-              key={v.id}
-              id={v.id}
-              image={v.image}
-              title={v.name}
-              subtitle={v.location}
-              badge={v.category}
-              badgeColor={getBadgeColor(v.category)}
-              period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
-              onClick={() => navigate(`/venues/${v.id}`)}
-              isFavorite={favorites.includes(v.id)}
+              key={show.id} // DB에 id가 있다면 그것을 사용
+              // 주의: DB 필드명과 Card 컴포넌트 props 이름이 다를 수 있습니다.
+              // 예: DB엔 'show_name'인데 Card는 'title'을 원한다면 show.show_name을 넣어야 함
+              id={show.id}
+              image={show.image || "https://via.placeholder.com/300"} // 이미지가 없을 경우 대비
+              title={show.title}
+              subtitle={show.subtitle || show.location}
+              period={show.period}
+              badge={show.badge}
+              badgeColor={show.badgeColor || "var(--badge-rose)"}
+              onClick={() => console.log("click:", show.title)}
+              isFavorite={favorites.includes(show.id)}
               onToggleFavorite={onToggleFavorite}
             />
           ))}
