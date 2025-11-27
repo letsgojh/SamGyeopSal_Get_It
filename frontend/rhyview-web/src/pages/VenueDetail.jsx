@@ -1,13 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
 import PageHeader from "../components/PageHeader";
-import { venues } from "../data/venues";
+// import { venues } from "../data/venues"; // ❌ 가짜 데이터 삭제
 import SeatingChart from "../components/SeatingChart";
 import Modal from "../components/Modal";
 import ReviewForm from "../components/ReviewForm";
+import { getVenueById } from "../api/venuesApi";
 
+// --- 스타일 컴포넌트 (기존 코드 그대로 유지) ---
 const Wrapper = styled.div`
   padding: 24px 32px 32px;
   @media (max-width: 768px){ padding: 20px 16px 24px; }
@@ -17,7 +19,6 @@ const TopLayout = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 24px; margin-bottom: 32px;
-
   @media (max-width: 960px){ grid-template-columns: 1fr; }
 `;
 
@@ -27,12 +28,6 @@ const SeatMapBox = styled.div`
   @media (max-width: 768px){ min-height: 200px; }
 `;
 const SeatMapHeader = styled.div` font-weight: 700; font-size: 15px; margin-bottom: 4px; `;
-const SeatMapBody = styled.div`
-  flex: 1; border-radius: 14px; border: 1px solid #e5e7eb;
-  background: repeating-linear-gradient(0deg,#f3f4f6,#f3f4f6 1px,transparent 1px,transparent 22px),
-              repeating-linear-gradient(90deg,#f3f4f6,#f3f4f6 1px,transparent 1px,transparent 32px);
-  display:flex; align-items:center; justify-content:center; color:#9ca3af; font-size:13px; text-align:center; padding:12px;
-`;
 
 const InfoBox = styled.div`
   border-radius: 18px; border: 1px solid var(--line); background:#fff; padding:18px;
@@ -69,81 +64,79 @@ const SmallRating = styled.span` color:#f59e0b; `;
 const ReviewText = styled.p` margin:0; line-height:1.5; `;
 
 const ModalListWrapper = styled.div`
-  padding: 0 20px 16px; /* 폼과 좌우 패딩 맞춤 */
-  
-  /* 리뷰가 없을 때 메시지 */
+  padding: 0 20px 16px;
   .empty-message {
-    color: #9ca3af;
-    font-size: 13px;
-    text-align: center;
-    padding: 24px 0 8px;
+    color: #9ca3af; font-size: 13px; text-align: center; padding: 24px 0 8px;
   }
-
-  /* 모달 내의 리뷰 목록은 스크롤되도록 */
   ${ReviewList} {
-    margin-top: 10px;
-    max-height: 250px; /* 최대 높이 지정 */
-    overflow-y: auto; /* 스크롤 */
-    padding-right: 8px; /* 스크롤바 공간 */
+    margin-top: 10px; max-height: 250px; overflow-y: auto; padding-right: 8px;
   }
-
-  /* 모달 내의 리뷰 카드 스타일 약간 조정 */
-  ${ReviewCard} {
-    padding: 12px 14px;
-  }
-
-  /* 유저/시간 정보 스타일 */
+  ${ReviewCard} { padding: 12px 14px; }
   .review-info {
-    font-size: 11px;
-    color: #6b7280;
-    margin-left: auto; /* 오른쪽 끝으로 */
+    font-size: 11px; color: #6b7280; margin-left: auto;
   }
 `;
 
 export default function VenueDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const venue = useMemo(() => venues.find(v => v.id === id), [id]);
 
-  const initialReviews = useMemo(() => {
-    if (!venue) return [];
-    return [
-      { id: 1, seat: "B5", rating: "4.5", text: `${venue.name}에서 관람. 무대 전체가 잘 보이면서 배우 표정도 적당히 보입니다.`, user: "뮤지컬광", time: "3일 전" },
-      { id: 2, seat: "C8", rating: "4.0", text: "전체 그림 보기에 좋지만 표정은 다소 멀게 느껴질 수 있어요.", user: "Rhyview", time: "5일 전" },
-      { id: 3, seat: "A6", rating: "5.0", text: "배우들 표정, 무대 전체 다 좋았어요. 강추!", user: "공연매니아", time: "1주 전" },
-      { id: 4, seat: "B5", rating: "3.8", text: "앞사람 머리가 좀 걸렸지만 볼만했습니다.", user: "초보관람객", time: "2주 전" },
-    ];
-  }, [venue]);
+  // ✅ 1. DB 데이터를 담을 state 생성
+  const [venue, setVenue] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // 👈 4. 리뷰 목록을 useMemo가 아닌 useState로 관리
+  // ✅ 2. 초기 리뷰 데이터 (아직 리뷰 API가 없으므로 임시 빈 배열 또는 예시)
   const [reviews, setReviews] = useState([]);
 
-  // venue가 로드되면 initialReviews를 state에 설정
-  React.useEffect(() => {
-    setReviews(initialReviews);
-  }, [initialReviews]);
+  // ✅ 3. 백엔드에서 공연 정보 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      // 👇 getShowById가 아니라 getVenueById를 호출합니다!
+      const data = await getVenueById(id);
+
+      if (data) {
+        setVenue({
+          ...data,
+          // DB 컬럼 매핑
+          name: data.name,           // 공연장 이름
+          location: data.address,    // 주소
+          category: "공연장",         // 카테고리 고정
+          rating: "0.0",             // 평점 (추후 구현)
+          reviewCount: 0,
+          shortDesc: "좌석 배치도와 리뷰를 확인하세요.",
+          seatingLayout: [[]]        // 배치도 데이터 (추후 구현)
+        });
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
 
 
-  // 👈 5. 모달 상태 및 선택된 좌석 state 추가
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
-  // 👈 6. 좌석 클릭 시 실행될 함수
   const handleSeatClick = (seatId) => {
-    setSelectedSeat(seatId);  // (1) 선택한 좌석 ID 저장
-    setReviewModalOpen(true); // (2) 리뷰 작성 모달 열기
+    setSelectedSeat(seatId);
+    setReviewModalOpen(true);
   };
 
-  // 👈 7. 리뷰 폼 제출 시 실행될 함수
   const handleAddReview = (newReview) => {
-    setReviews([newReview, ...reviews]); // (1) 리뷰 목록에 추가
-    setReviewModalOpen(false); // (2) 리뷰 작성 모달 닫기
-    setSelectedSeat(null); // (3) 선택한 좌석 초기화
+    setReviews([newReview, ...reviews]);
+    setReviewModalOpen(false);
+    setSelectedSeat(null);
   };
 
-  // 👈 +2. 선택된 좌석의 리뷰만 필터링합니다.
   const reviewsForSeat = reviews.filter(r => r.seat === selectedSeat);
 
+  // ✅ 로딩 중일 때 처리
+  if (loading) {
+    return <Wrapper><PageHeader title="데이터 불러오는 중..." /></Wrapper>;
+  }
+
+  // ✅ 데이터가 없을 때 (에러) 처리
   if (!venue) {
     return (
       <Wrapper>
@@ -161,11 +154,8 @@ export default function VenueDetail() {
         <TopLayout>
           <SeatMapBox>
             <SeatMapHeader>좌석 배치도</SeatMapHeader>
-            {/* placeholder 텍스트와 <SeatMapBody> 대신 
-              SeatingChart 컴포넌트를 렌더링합니다.
-            */}
             <SeatingChart
-              layout={venue.seatingLayout || [[]]} // layout이 없을 경우 에러 방지
+              layout={venue.seatingLayout}
               onSeatClick={handleSeatClick}
               reviews={reviews}
             />
@@ -175,6 +165,10 @@ export default function VenueDetail() {
             <Tag>{venue.category}</Tag>
             <div style={{ fontSize: 20, fontWeight: 800 }}>{venue.name}</div>
             <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 4 }}>{venue.location}</div>
+
+            {/* 이미지 추가 (필요하다면 주석 해제해서 사용) */}
+            {/* <img src={venue.image} alt={venue.name} style={{width:'100%', borderRadius:8, marginTop: 10}} /> */}
+
             <RatingRow><span className="star">★</span><span>{venue.rating} ({venue.reviewCount}개 리뷰)</span></RatingRow>
             <div style={{ fontSize: 13, color: "#4b5563", marginTop: 6 }}>{venue.shortDesc}</div>
             <ButtonRow>
@@ -207,13 +201,11 @@ export default function VenueDetail() {
         </ReviewSection>
       </Wrapper>
 
-      {/* 👈 10. 리뷰 작성 모달 렌더링 */}
       <Modal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
         title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰"}
       >
-        {/* (1) 이 좌석의 리뷰 목록 */}
         {reviewModalOpen && (
           <ReviewForm
             seatId={selectedSeat}
