@@ -122,7 +122,7 @@ export default function Sidebar({ user, onLoginClick, onLogoutClick }) {
         </Item>
         <Item to="/favorites" className={({ isActive }) => (isActive ? "active" : "")}>
           <Heart size={16} />
-          <span>찜 목록</span>
+          <span>팬</span>
         </Item>
         <Item to="/ticket"><Ticket size={16} /><span>티켓</span></Item>
       </div>

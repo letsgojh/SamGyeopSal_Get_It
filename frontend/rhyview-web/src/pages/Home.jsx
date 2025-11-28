@@ -38,7 +38,7 @@ export default function Home({ favorites = [], onToggleFavorite }) {
   const [shows, setShows] = useState([]); // 상단 (공연)
   const [venues, setVenues] = useState([]); // 하단 (공연장)
 
-  // ✅ 백엔드 데이터 가져오기
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -121,7 +121,7 @@ export default function Home({ favorites = [], onToggleFavorite }) {
 
         <Grid3>
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
-          {venues.map((venue) => (
+          {venues.slice(0,3).map((venue) => (
             <Card
               key={venue.id}
               id={venue.id}
