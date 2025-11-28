@@ -7,6 +7,8 @@ import SeatingChart from "../components/SeatingChart";
 import Modal from "../components/Modal";
 import ReviewForm from "../components/ReviewForm";
 
+import {getVenueById} from "../api/venuesApi.js";
+
 const Wrapper = styled.div`
   padding: 24px 32px 32px;
   @media (max-width: 768px) {
