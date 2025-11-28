@@ -1,10 +1,8 @@
-// src/pages/Community.jsx
-
 import React, { useState } from "react";
 import styled from "styled-components";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
-import { Send } from "lucide-react"; // Send 아이콘 사용
+import { Send } from "lucide-react";
 
 const Section = styled.section`
   padding: 24px 32px 32px;
@@ -22,12 +20,10 @@ const Grid2 = styled.div`
   }
 `;
 
-/* ------------------ 공연 커뮤니티 리스트 화면용 스타일 ------------------ */
-
 const ShowGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px;
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -39,26 +35,26 @@ const ShowGrid = styled.div`
 
 const ShowCard = styled.div`
   display: flex;
-  align-items: center;
-  gap: 16px;
-  border-radius: 16px;
+  align-items: flex-start;
+  gap: 20px;
+  border-radius: 18px;
   border: 1px solid var(--line);
   background: #ffffff;
-  padding: 14px 16px;
+  padding: 20px 22px;
   cursor: pointer;
   transition: box-shadow 0.15s ease, transform 0.1s ease;
 
   &:hover {
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
 `;
 
 const ShowThumb = styled.div`
   flex-shrink: 0;
-  width: 96px;
-  height: 72px;
-  border-radius: 12px;
+  width: 140px;
+  height: 200px;
+  border-radius: 14px;
   background-color: #e5e7eb;
   background-position: center;
   background-size: cover;
@@ -69,29 +65,29 @@ const ShowContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 `;
 
 const ShowTitle = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 `;
 
 const ShowVenue = styled.div`
-  font-size: 12px;
+  font-size: 13px;
   color: #6b7280;
 `;
 
 const ShowPeriod = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   color: #9ca3af;
 `;
 
 const ShowStatRow = styled.div`
-  margin-top: 6px;
+  margin-top: 8px;
   display: flex;
-  gap: 12px;
-  font-size: 11px;
+  gap: 14px;
+  font-size: 12px;
   color: #6b7280;
 `;
 
@@ -108,8 +104,6 @@ const BackLink = styled.button`
     text-decoration: underline;
   }
 `;
-
-/* ------------------ 커뮤니티 게시판 스타일 ------------------ */
 
 const FeedCard = styled.div`
   border-radius: 16px;
@@ -131,6 +125,7 @@ const FeedHeader = styled.div`
   gap: 10px;
   margin-bottom: 6px;
 `;
+
 const ArtistAvatar = styled.div`
   width: 32px;
   height: 32px;
@@ -141,29 +136,35 @@ const ArtistAvatar = styled.div`
   justify-content: center;
   font-size: 16px;
 `;
+
 const ArtistInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
 `;
+
 const ArtistName = styled.span`
   font-size: 13px;
   font-weight: 700;
 `;
+
 const ArtistMeta = styled.span`
   font-size: 11px;
   color: #9ca3af;
 `;
+
 const FeedTitle = styled.div`
   font-size: 15px;
   font-weight: 700;
   margin: 6px 0;
 `;
+
 const FeedBody = styled.p`
   margin: 0;
   font-size: 13px;
   color: #4b5563;
 `;
+
 const FeedFooter = styled.div`
   margin-top: 10px;
   font-size: 12px;
@@ -178,6 +179,7 @@ const ScheduleCard = styled.div`
   background: #fff;
   padding: 16px 18px;
 `;
+
 const ScheduleItem = styled.div`
   padding: 10px 0;
   border-bottom: 1px solid #f3f4f6;
@@ -188,14 +190,17 @@ const ScheduleItem = styled.div`
     border-bottom: none;
   }
 `;
+
 const ScheduleTitle = styled.div`
   font-size: 14px;
   font-weight: 700;
 `;
+
 const ScheduleMeta = styled.div`
   font-size: 12px;
   color: #6b7280;
 `;
+
 const ScheduleTag = styled.span`
   display: inline-block;
   margin-top: 4px;
@@ -212,23 +217,25 @@ const CommentList = styled.div`
   gap: 10px;
   margin-top: 12px;
 `;
+
 const CommentCard = styled.div`
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   background: #f9fafb;
   padding: 8px 10px;
 `;
+
 const CommentMeta = styled.div`
   font-size: 11px;
   color: #9ca3af;
   margin-bottom: 4px;
 `;
+
 const CommentText = styled.div`
   font-size: 13px;
   color: #374151;
 `;
 
-// 댓글 입력 폼
 const CommentForm = styled.form`
   display: flex;
   gap: 8px;
@@ -236,6 +243,7 @@ const CommentForm = styled.form`
   padding-top: 16px;
   border-top: 1px solid #f3f4f6;
 `;
+
 const CommentInput = styled.input`
   flex: 1;
   padding: 10px 12px;
@@ -248,6 +256,7 @@ const CommentInput = styled.input`
     border-color: transparent;
   }
 `;
+
 const SubmitBtn = styled.button`
   background: var(--brand);
   color: white;
@@ -264,9 +273,6 @@ const SubmitBtn = styled.button`
   }
 `;
 
-/* ------------------ 더미 데이터 ------------------ */
-
-/** 1) 공연 커뮤니티 목록 (첫 화면 카드 리스트) */
 const showCommunities = [
   {
     id: 1,
@@ -275,7 +281,7 @@ const showCommunities = [
     period: "2024.11.15 ~ 2025.02.28",
     members: "1,245",
     likes: "8,920",
-    image: "",
+    image: "/posters/opera.jpg",
   },
   {
     id: 2,
@@ -284,7 +290,7 @@ const showCommunities = [
     period: "2024.12.01 ~ 2025.03.31",
     members: "890",
     likes: "5,420",
-    image: "",
+    image: "/posters/les.jpg",
   },
   {
     id: 3,
@@ -293,7 +299,7 @@ const showCommunities = [
     period: "2024.12.15 ~ 2024.12.20",
     members: "2,890",
     likes: "15,780",
-    image: "",
+    image: "/posters/iu.jpg",
   },
   {
     id: 4,
@@ -302,7 +308,7 @@ const showCommunities = [
     period: "2025.01.05 ~ 2025.01.06",
     members: "620",
     likes: "3,210",
-    image: "",
+    image: "/posters/touched.jpg",
   },
   {
     id: 5,
@@ -311,7 +317,7 @@ const showCommunities = [
     period: "2025.02.01 ~ 2025.05.31",
     members: "980",
     likes: "7,540",
-    image: "",
+    image: "/posters/beauty.jpg",
   },
   {
     id: 6,
@@ -320,7 +326,7 @@ const showCommunities = [
     period: "2025.03.10 ~ 2025.03.12",
     members: "1,530",
     likes: "9,120",
-    image: "",
+    image: "/posters/disney.jpg",
   },
   {
     id: 7,
@@ -329,7 +335,7 @@ const showCommunities = [
     period: "2025.04.01 ~ 2025.06.30",
     members: "2,310",
     likes: "12,480",
-    image: "",
+    image: "/posters/juice.jpeg",
   },
   {
     id: 8,
@@ -338,11 +344,10 @@ const showCommunities = [
     period: "2025.05.03 ~ 2025.05.05",
     members: "4,520",
     likes: "20,310",
-    image: "",
+    image: "/posters/deathnote.jpg",
   },
 ];
 
-/** 2) 공연별 아티스트/팬 피드 (공연 id 기준) */
 const artistPostsByShow = {
   1: [
     {
@@ -582,7 +587,6 @@ const artistPostsByShow = {
   ],
 };
 
-/** 3) 공연별 일정 정보 (오른쪽 카드에 표시) */
 const scheduleByShow = {
   1: [
     {
@@ -658,7 +662,6 @@ const scheduleByShow = {
   ],
 };
 
-/** 4) 초기 댓글 (post id 기준) */
 const initialComments = {
   101: [
     {
@@ -864,7 +867,6 @@ const initialComments = {
   ],
 };
 
-// 👇 user prop 사용
 export default function Community({ user }) {
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedShow, setSelectedShow] = useState(null);
@@ -897,16 +899,10 @@ export default function Community({ user }) {
     setInputText("");
   };
 
-  /* ======================== 렌더링 분기 ======================== */
-
-  // 1) 공연 선택 화면
   if (!selectedShow) {
     return (
       <>
-        <PageHeader
-          title="커뮤니티"
-          desc="공연별 커뮤니티를 선택하세요."
-        />
+        <PageHeader title="커뮤니티" desc="공연별 커뮤니티를 선택하세요." />
         <Section>
           <ShowGrid>
             {showCommunities.map((show) => (
@@ -931,11 +927,9 @@ export default function Community({ user }) {
     );
   }
 
-  // 선택된 공연 데이터
   const postsForShow = artistPostsByShow[selectedShow.id] || [];
   const scheduleForShow = scheduleByShow[selectedShow.id] || [];
 
-  // 2) 특정 공연 커뮤니티 게시판 화면
   return (
     <>
       <PageHeader

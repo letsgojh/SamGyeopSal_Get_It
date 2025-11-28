@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { Home, Star, MessageSquare, Heart, Ticket, LogIn, LogOut } from "lucide-react";
 
-// 하단 프로필 영역 스타일
 const ProfileArea = styled.div`
-  margin-top: auto; /* 사이드바 맨 아래로 밀기 */
+  margin-top: auto; 
   padding-top: 10px;
   border-top: 1px solid var(--line);
   display: flex;
@@ -79,6 +78,13 @@ const BrandLink = styled(NavLink)`
   }
 `;
 
+const LogoImg = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 8px;
+`;
+
 const Item = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -103,7 +109,7 @@ export default function Sidebar({ user, onLoginClick, onLogoutClick }) {
   return (
     <Aside>
       <BrandLink to="/" end>
-        <span role="img" aria-label="ticket">🎟️</span>
+        <LogoImg src="/posters/logo.png" alt="Rhyview 로고" />
         <span>Rhyview</span>
       </BrandLink>
 

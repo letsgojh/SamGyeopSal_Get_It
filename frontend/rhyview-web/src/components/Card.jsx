@@ -14,7 +14,7 @@ const Shell = styled.div`
 const ImgBox = styled.div`
   position:relative;
   width:100%;
-  aspect-ratio: 16 / 10; /* 반응형 이미지 높이 */
+  aspect-ratio: 16 / 10; 
   background:#eee;
   img{ width:100%; height:100%; object-fit:cover; display:block; }
   .badge{ position:absolute; top:12px; left:12px; }
@@ -36,12 +36,12 @@ const HeartBtn = styled.button`
   height: 32px;
   border-radius: 50%;
   border: 1px solid #e5e7eb;
-  background: rgba(255, 255, 255, 0.9); /* 반투명 흰색 배경 */
+  background: rgba(255, 255, 255, 0.9); 
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10; /* 이미지 위에 뜨도록 */
+  z-index: 10; 
   transition: transform 0.2s, background 0.2s;
 
   &:hover {
@@ -58,10 +58,10 @@ const HeartBtn = styled.button`
 export default function Card({ id, image, title, subtitle, badge, badgeColor, period, onClick, isFavorite, onToggleFavorite, ...props }) {
   // 하트 클릭 핸들러
   const handleHeartClick = (e) => {
-    e.preventDefault(); // Link 이동 방지
-    e.stopPropagation(); // 이벤트 전파 방지
+    e.preventDefault();
+    e.stopPropagation(); 
     if (onToggleFavorite) {
-      onToggleFavorite(id); // 상위 컴포넌트의 토글 함수 호출
+      onToggleFavorite(id);
     }
   };
 
@@ -84,8 +84,7 @@ export default function Card({ id, image, title, subtitle, badge, badgeColor, pe
         <HeartBtn onClick={handleHeartClick}>
           <Heart
             size={18}
-            color="black" // 테두리는 항상 검정
-            // 찜 상태면 빨강 채우기, 아니면 흰색(또는 투명) 채우기
+            color="black"
             fill={isFavorite ? "#f43f5e" : "white"}
             strokeWidth={2}
           />

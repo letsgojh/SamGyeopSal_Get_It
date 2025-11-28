@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
 import { venues, hotDeals } from "../data/venues";
-import { fundings } from "../data/fundings";   // ✅ 새로 추가
+import { fundings } from "../data/fundings";
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -46,8 +46,6 @@ const Button = styled.button`
     opacity: 0.9;
   }
 `;
-
-/* ---------------------- 펀딩 영역 전용 스타일 ---------------------- */
 
 const FundingHeaderRow = styled.div`
   display: flex;
@@ -95,11 +93,11 @@ const FundingCount = styled.p`
 
 const FundingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   @media (max-width: 960px) {
@@ -118,11 +116,11 @@ const FundingCard = styled.article`
 
 const FundingThumb = styled.div`
   width: 100%;
-  padding-top: 70%;
-  background-position: center;
+  padding-top: 85%;
+  background-position: center 35%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: #e5e7eb; /* 이미지 없어도 디자인 안 깨지도록 */
+  background-color: #e5e7eb;
 `;
 
 const FundingBody = styled.div`
@@ -202,14 +200,13 @@ const getBadgeColor = (category) => {
     case "소극장":
       return "#f59e0b";
     default:
-      return "var(--badge-rose)"; // hotDeals의 기본색 등
+      return "var(--badge-rose)";
   }
 };
 
 export default function Favorites({ favorites, onToggleFavorite, user }) {
   const navigate = useNavigate();
 
-  // 페이지 진입 시 로그인 체크
   useEffect(() => {
     if (!user) {
       navigate("/");
@@ -217,33 +214,25 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
     }
   }, [user, navigate]);
 
-  // user 없을 땐 아무것도 렌더링X
   if (!user) return null;
 
-  // venues, hotDeals를 묶은 리스트
   const allItems = [...hotDeals, ...venues];
-  const favoriteVenues = allItems.filter((v) => favorites.includes(v.id)); // id
+  const favoriteVenues = allItems.filter((v) => favorites.includes(v.id));
 
-  // 팝업 상태 관리
   const [selectedAd, setSelectedAd] = useState(null);
 
-  // 클릭 핸들러 통합 (여기서 분기 처리)
   const handleCardClick = (item) => {
     if (item.category) {
-      // 카테고리가 있으면 공연장 -> 상세 페이지 이동
       navigate(`/venues/${item.id}`);
     } else {
-      // 카테고리가 없으면 핫딜(광고) -> 모달 오픈
       setSelectedAd(item);
     }
   };
 
   return (
     <>
-      {/* 상단 헤더는 그대로 유지 (원하면 텍스트만 '팬' 등으로 바꿔도 됨) */}
       <PageHeader title="찜 목록" desc="내가 찜한 공연장을 모아보세요" />
 
-      {/* ---------------------- 기존 찜 목록 섹션 그대로 ---------------------- */}
       <Section>
         {favoriteVenues.length > 0 ? (
           <Grid3>
@@ -252,13 +241,11 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
                 key={v.id}
                 id={v.id}
                 image={v.image}
-                title={v.title || v.name} // hotDeals는 title, venues는 name
-                subtitle={v.subtitle || v.location} // hotDeals는 subtitle, venues는 location
-                badge={v.badge || v.category} // hotDeals는 badge, venues는 category
-                badgeColor={v.badgeColor || getBadgeColor(v.category)} // hotDeals는 색깔을 변수로 가짐. venues는 카테고리에 따라 색깔 다르게 가짐
-                period={v.period || `⭐ ${v.rating} (${v.reviewCount}개 리뷰)`} // 평점/리뷰 수
-
-                // hotDeals인지 venues인지에 따라, 클릭 시 다르게 작동
+                title={v.title || v.name}
+                subtitle={v.subtitle || v.location}
+                badge={v.badge || v.category}
+                badgeColor={v.badgeColor || getBadgeColor(v.category)}
+                period={v.period || `⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
                 onClick={() => handleCardClick(v)}
                 isFavorite={true}
                 onToggleFavorite={onToggleFavorite}
@@ -275,7 +262,6 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
         )}
       </Section>
 
-      {/* ---------------------- 새로 추가된 펀딩 섹션 ---------------------- */}
       <Section>
         <FundingHeaderRow>
           <div>
@@ -286,7 +272,6 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
           </div>
         </FundingHeaderRow>
 
-        {/* 상단 필터 (팬(1) 스샷 느낌) */}
         <FundingFilterBar>
           <FundingChip>좋은창작자</FundingChip>
           <FundingChip>상태</FundingChip>
@@ -295,12 +280,10 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
           <FundingChip>에디터 추천</FundingChip>
         </FundingFilterBar>
 
-        {/* 프로젝트 개수 */}
         <FundingCount>
           {fundings.length.toLocaleString()}개의 프로젝트가 있습니다.
         </FundingCount>
 
-        {/* 펀딩 카드 리스트 */}
         <FundingGrid>
           {fundings.map((item) => (
             <FundingCard key={item.id}>
@@ -320,9 +303,7 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
 
                 <FundingBarWrapper>
                   <FundingBarFill
-                    style={{
-                      width: `${Math.min(item.progress, 100)}%`,
-                    }}
+                    style={{ width: `${Math.min(item.progress, 100)}%` }}
                   />
                 </FundingBarWrapper>
               </FundingBody>
@@ -331,7 +312,6 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
         </FundingGrid>
       </Section>
 
-      {/* ---------------------- 기존 광고 모달 그대로 ---------------------- */}
       <Modal
         open={!!selectedAd}
         onClose={() => setSelectedAd(null)}

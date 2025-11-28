@@ -1,7 +1,7 @@
 const charlotteLayout = [
   // 1열은 'STAGE'로 채워서 무대를 표시
   ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
-  // 2열은 실제 좌석과 복도(null)
+  // 2열은 실제 좌석과 복도
   [null, null, null, 'A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10', null, null, null,],
   [null, null, 'B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12', null, null,],
   [null, 'C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14', null,],
@@ -79,7 +79,7 @@ export const venues = [
     name: "예술의전당 콘서트홀",
     location: "서울 서초구",
     category: "콘서트",
-    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b",
+    image: "/posters/art.jpg",
     rating: "4.8",
     reviewCount: 892,
     shortDesc: "클래식에 최적화된 음향을 자랑하는 콘서트홀입니다.",
@@ -90,7 +90,7 @@ export const venues = [
     name: "KSPO DOME",
     location: "서울 송파구",
     category: "경기장",
-    image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4",
+    image: "/posters/kspo.jpg",
     rating: "4.3",
     reviewCount: 1204,
     shortDesc: "올림픽공원 안에서 규모가 가장 큰 경기장.",
@@ -101,7 +101,7 @@ export const venues = [
     name: "블루스퀘어",
     location: "서울 용산구",
     category: "뮤지컬",
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14",
+    image: "/posters/blue.jpg",
     rating: "4.6",
     reviewCount: 645,
     shortDesc: "국내 흥행 1위 공연장.",
@@ -111,7 +111,7 @@ export const venues = [
 
 export const hotDeals = [
   {
-    id: 1, // 찜 기능을 위해 고유 ID 필요
+    id: 1, 
     image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
     title: "밤하늘 아래 어쿠스틱",
     subtitle: "카페 뮤직홀 (홍대)",
@@ -124,7 +124,7 @@ export const hotDeals = [
   {
     id: 2,
     image: "https://static.wixstatic.com/media/c64bc2_e2bae231ffb9495291ea3d76ab8ab39e~mv2.jpg/v1/fill/w_722,h_271,al_c,lg_1,q_80,enc_avif,quality_auto/c64bc2_e2bae231ffb9495291ea3d76ab8ab39e~mv2.jpg",
-    title: "소극장 연극 <오필리움 이야기>",
+    title: "소극장 연극 <우리들의 이야기>",
     subtitle: "아르코예술극장 소극장",
     period: "2024.11.05 - 2024.11.25",
     badge: "잔여 45석",
@@ -135,8 +135,8 @@ export const hotDeals = [
   {
     id: 3,
     image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8JUVCJUIwJUI0JUVCJTkzJTlDfGVufDB8fDB8fHww",
-    title: "인디밴드 <달빛오정>",
-    subtitle: "클럽풍류",
+    title: "인디밴드 <달빛요정역전만루홈런>",
+    subtitle: "롤링홀",
     period: "2024.11.12",
     badge: "25% 할인 · 잔여 30석",
     badgeColor: "var(--badge-rose)",
