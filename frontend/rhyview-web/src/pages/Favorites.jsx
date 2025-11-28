@@ -267,7 +267,7 @@ export default function Favorites({ favorites, onToggleFavorite, user }) {
           <div>
             <FundingTitle>펀딩</FundingTitle>
             <FundingSubtitle>
-              팬의 힘으로 만드는 공연 프로젝트를 만나보세요
+              모두의 힘으로 만드는 특별한 경험
             </FundingSubtitle>
           </div>
         </FundingHeaderRow>
