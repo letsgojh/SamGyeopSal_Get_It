@@ -1,7 +1,7 @@
 const charlotteLayout = [
   // 1열은 'STAGE'로 채워서 무대를 표시
   ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
-  // 2열은 실제 좌석과 복도(null)
+  // 2열은 실제 좌석과 복도
   [null, null, null, 'A1', 'A2', 'A3', null, 'A4', 'A5', 'A6', 'A7', null, 'A8', 'A9', 'A10', null, null, null,],
   [null, null, 'B1', 'B2', 'B3', 'B4', null, 'B5', 'B6', 'B7', 'B8', null, 'B9', 'B10', 'B11', 'B12', null, null,],
   [null, 'C1', 'C2', 'C3', 'C4', 'C5', null, 'C6', 'C7', 'C8', 'C9', null, 'C10', 'C11', 'C12', 'C13', 'C14', null,],
@@ -111,7 +111,7 @@ export const venues = [
 
 export const hotDeals = [
   {
-    id: 1, // 찜 기능을 위해 고유 ID 필요
+    id: 1, 
     image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
     title: "밤하늘 아래 어쿠스틱",
     subtitle: "카페 뮤직홀 (홍대)",

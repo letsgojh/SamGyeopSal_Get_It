@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { Home, Star, MessageSquare, Heart, Ticket, LogIn, LogOut } from "lucide-react";
 
-// 하단 프로필 영역 스타일
 const ProfileArea = styled.div`
-  margin-top: auto; /* 사이드바 맨 아래로 밀기 */
+  margin-top: auto; 
   padding-top: 10px;
   border-top: 1px solid var(--line);
   display: flex;
