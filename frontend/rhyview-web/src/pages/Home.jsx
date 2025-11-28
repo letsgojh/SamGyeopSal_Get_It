@@ -3,8 +3,10 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import { venues, hotDeals } from "../data/venues";
 import Modal from "../components/Modal";
+
+import { API_BASE, getShows } from "../api/showApi";   // 공연 API (상단용)
+import { getVenues } from "../api/venuesApi";           // 공연장 API (하단용)
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -33,6 +35,35 @@ const getBadgeColor = (category) => {
 export default function Home({ favorites = [], onToggleFavorite }) {
   const navigate = useNavigate();
   const [selectedAd, setSelectedAd] = useState(null);
+  const [shows, setShows] = useState([]); // 상단 (공연)
+  const [venues, setVenues] = useState([]); // 하단 (공연장)
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getShows();
+        console.log("Home 데이터 로드 완료:", data);
+        setShows(data);
+      } catch (err) {
+        console.error("데이터 로드 실패:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getVenues();
+        console.log("Home 데이터 로드 완료:", data);
+        setVenues(data);
+      } catch (err) {
+        console.error("데이터 로드 실패:", err);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -41,12 +72,29 @@ export default function Home({ favorites = [], onToggleFavorite }) {
       <Section>
         <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>놓치지 마세요</h3>
         <Grid3>
-          {hotDeals.map((c) => (
+          {shows.map((show) => (
             <Card
-              key={c.id}
-              {...c}
-              onClick={() => setSelectedAd(c)}
-              isFavorite={favorites.includes(c.id)}
+              key={show.id}
+              id={show.id}
+
+              // ✅ 이미지 주소 연결 (DB 경로 앞에 서버 주소 붙이기)
+              image={show.poster_url
+                ? `${API_BASE}${show.poster_url}`
+                : "https://via.placeholder.com/300"}
+
+              title={show.title}
+
+              // 장소 정보가 없으면 설명으로 대체
+              subtitle={show.description || "공연장 정보 없음"}
+
+              // 날짜 포맷 (YYYY-MM-DD)
+              period={`${show.start_date?.slice(0, 10)} ~ ${show.end_date?.slice(0, 10)}`}
+
+              badge={show.category}
+              badgeColor={getBadgeColor(show.category)}
+
+              onClick={() => setSelectedAd(show)}
+              isFavorite={favorites.includes(show.id)}
               onToggleFavorite={onToggleFavorite}
             />
           ))}
@@ -66,18 +114,19 @@ export default function Home({ favorites = [], onToggleFavorite }) {
           </button>
         </div>
         <Grid3>
-          {venues.map((v) => (
+          {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
+          {venues.slice(0,3).map((venue) => (
             <Card
-              key={v.id}
-              id={v.id}
-              image={v.image}
-              title={v.name}
-              subtitle={v.location}
-              badge={v.category}
-              badgeColor={getBadgeColor(v.category)}
-              period={`⭐ ${v.rating} (${v.reviewCount}개 리뷰)`}
-              onClick={() => navigate(`/venues/${v.id}`)}
-              isFavorite={favorites.includes(v.id)}
+              key={venue.id}
+              id={venue.id}
+              image={"https://via.placeholder.com/300?text=Venue"}
+              title={venue.name}
+              subtitle={venue.address}
+              period={"공연장"}
+              badge={"Venue"}
+              badgeColor={"#6b7280"}
+              onClick={() => navigate(`/venues/${venue.id}`)}
+              isFavorite={favorites.includes(venue.id)}
               onToggleFavorite={onToggleFavorite}
             />
           ))}

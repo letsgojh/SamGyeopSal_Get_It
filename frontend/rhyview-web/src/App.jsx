@@ -34,16 +34,10 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   // 로그인 처리 함수
-  const handleLogin = (email, password) => {
-    // 실제로는 서버 통신이 들어갈 자리
-    if (email && password) {
-      setUser({
-        name: "Rhyview 유저",
-        email: email,
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-      });
-      setIsLoginModalOpen(false); // 모달 닫기
-    }
+  const handleLogin = (userData) => {
+    console.log("로그인 성공:", userData);
+    setUser(userData);
+    setIsLoginModalOpen(false);
   };
 
   // 로그아웃 처리
