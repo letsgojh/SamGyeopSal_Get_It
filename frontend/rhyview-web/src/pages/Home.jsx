@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-// import { hotDeals } from "../data/venues"; // ❌ 더미 데이터 삭제 (이제 안 씀)
 import Modal from "../components/Modal";
-// ✅ API 함수와 주소 가져오기
+
 import { API_BASE, getShows } from "../api/showApi";   // 공연 API (상단용)
-import { getVenues } from "../api/venuesApi";
+import { getVenues } from "../api/venuesApi";           // 공연장 API (하단용)
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -36,8 +35,8 @@ const getBadgeColor = (category) => {
 export default function Home({ favorites = [], onToggleFavorite }) {
   const navigate = useNavigate();
   const [selectedAd, setSelectedAd] = useState(null);
-  const [shows, setShows] = useState([]); // 전체 공연 데이터
-  const [venues, setVenues] = useState([]);
+  const [shows, setShows] = useState([]); // 상단 (공연)
+  const [venues, setVenues] = useState([]); // 하단 (공연장)
 
   // ✅ 백엔드 데이터 가져오기
   useEffect(() => {
@@ -96,7 +95,7 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badge={show.category}
               badgeColor={getBadgeColor(show.category)}
 
-              onClick={() => navigate(`/venues/${show.id}`)}
+              onClick={() => setSelectedAd(show)}
               isFavorite={favorites.includes(show.id)}
               onToggleFavorite={onToggleFavorite}
             />
@@ -124,23 +123,12 @@ export default function Home({ favorites = [], onToggleFavorite }) {
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
           {venues.map((venue) => (
             <Card
-              // ✅ Venue 테이블 컬럼 매핑 (id, name, address)
               key={venue.id}
               id={venue.id}
-
-              // 1. 이미지가 없으므로 기본 이미지 사용 (또는 DB에 image_url 추가 필요)
               image={"https://via.placeholder.com/300?text=Venue"}
-
-              // 2. 공연장 이름 (name -> title)
               title={venue.name}
-
-              // 3. 주소 (address -> subtitle)
               subtitle={venue.address}
-
-              // 4. 공연장은 날짜가 없으므로 생략하거나 '상시 개방' 등 표시
               period={"공연장"}
-
-              // 5. 뱃지
               badge={"Venue"}
               badgeColor={"#6b7280"}
               onClick={() => navigate(`/venues/${venue.id}`)}
