@@ -9,7 +9,7 @@ export const fundings = [
     progress: 158,
     amount: "3,170,000원",
     dday: "2일 남음",
-    image: "", // 필요하면 나중에 실제 이미지 경로 넣기
+    image: "/posters/adult.webp", // 필요하면 나중에 실제 이미지 경로 넣기
   },
   {
     id: 2,
@@ -29,7 +29,7 @@ export const fundings = [
     progress: 80,
     amount: "445,000원",
     dday: "27일 남음",
-    image: "",
+    image: "/posters/wb.webp",
   },
   {
     id: 4,
@@ -39,21 +39,11 @@ export const fundings = [
     progress: 14,
     amount: "70,000원",
     dday: "9일 남음",
-    image: "",
+    image: "/posters/call.webp",
   },
 
   {
     id: 5,
-    category: "뮤지컬",
-    title: "캠퍼스 창작뮤지컬 ‘봄, 다시 너에게’",
-    description: "대학생 창작자들이 함께 만드는 캠퍼스 로맨스 뮤지컬.",
-    progress: 62,
-    amount: "1,120,000원",
-    dday: "5일 남음",
-    image: "",
-  },
-  {
-    id: 6,
     category: "콘서트",
     title: "청춘 버스킹 콘서트 ‘밤의 산책’",
     description: "신인 뮤지션들의 라이브 공연을 위한 야외 콘서트 펀딩.",
@@ -62,18 +52,9 @@ export const fundings = [
     dday: "13일 남음",
     image: "",
   },
+
   {
-    id: 7,
-    category: "클래식",
-    title: "실내악 프로젝트 ‘겨울의 편지’",
-    description: "젊은 연주자들이 준비한 실내악 공연 제작 지원 프로젝트.",
-    progress: 91,
-    amount: "2,040,000원",
-    dday: "4일 남음",
-    image: "",
-  },
-  {
-    id: 8,
+    id: 6,
     category: "공연",
     title: "독립 극단 단막선 ‘비 오는 날의 극장’",
     description: "단막극 4편을 한 번에 만나는 실험적인 공연 시리즈.",
