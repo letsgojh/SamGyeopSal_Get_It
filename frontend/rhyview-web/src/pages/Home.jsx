@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
@@ -69,12 +69,10 @@ export default function Home({ favorites = [], onToggleFavorite }) {
     <>
       <PageHeader title="환영합니다" desc="공연장 좌석 리뷰를 확인하고 공유하세요" />
 
-      {/* 🟢 1. 상단 섹션: "놓치지 마세요" (DB 데이터 중 앞의 3개만 보여줌) */}
       <Section>
         <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>놓치지 마세요</h3>
         <Grid3>
-          {/* shows.slice(0, 3) -> 데이터 3개만 잘라서 보여주기 */}
-          {shows.slice(0, 3).map((show) => (
+          {shows.map((show) => (
             <Card
               key={show.id}
               id={show.id}
@@ -100,14 +98,11 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               onToggleFavorite={onToggleFavorite}
             />
           ))}
-          {/* 데이터가 로딩 중이거나 없을 때 안내 */}
-          {shows.length === 0 && <p>로딩 중이거나 등록된 공연이 없습니다.</p>}
         </Grid3>
       </Section>
 
       <hr style={{ border: 0, borderTop: "1px solid var(--line)" }} />
 
-      {/* 🔵 2. 하단 섹션: "인기 공연장" (전체 리스트 보여주기) */}
       <Section>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <h3 style={{ fontSize: 18, fontWeight: 800 }}>인기 공연장</h3>
@@ -118,7 +113,6 @@ export default function Home({ favorites = [], onToggleFavorite }) {
             전체 리뷰 보기
           </button>
         </div>
-
         <Grid3>
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
           {venues.slice(0,3).map((venue) => (
@@ -139,17 +133,19 @@ export default function Home({ favorites = [], onToggleFavorite }) {
         </Grid3>
       </Section>
 
-      {/* 광고 모달 (Card 클릭 시 나오는 기능용 - 필요 없다면 삭제 가능) */}
       <Modal
         open={!!selectedAd}
         onClose={() => setSelectedAd(null)}
         title={selectedAd?.title || "광고"}
       >
         {selectedAd && (
-          <div style={{ textAlign: 'center' }}>
-            <h3>{selectedAd.title}</h3>
-            <p>이 기능은 현재 준비 중입니다.</p>
-          </div>
+          <a href={selectedAd.adLink} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+            <img
+              src={selectedAd.adImage}
+              alt={selectedAd.title}
+              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+            />
+          </a>
         )}
       </Modal>
     </>
