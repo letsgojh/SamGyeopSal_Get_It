@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
@@ -142,7 +142,6 @@ export default function Home({ favorites = [], onToggleFavorite }) {
             전체 리뷰 보기
           </button>
         </div>
-
         <Grid3>
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
           {venues.slice(0,3).map((venue) => (

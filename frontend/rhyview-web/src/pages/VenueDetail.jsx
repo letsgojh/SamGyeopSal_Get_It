@@ -6,7 +6,6 @@ import PageHeader from "../components/PageHeader";
 import SeatingChart from "../components/SeatingChart";
 import Modal from "../components/Modal";
 import ReviewForm from "../components/ReviewForm";
-import { getVenueById } from "../api/venuesApi";
 
 const Wrapper = styled.div`
   padding: 24px 32px 32px;
@@ -170,13 +169,17 @@ const ReviewText = styled.p`
 `;
 
 const ModalListWrapper = styled.div`
-  padding: 0 20px 16px;
+  padding: 0 20px 16px; /* 폼과 좌우 패딩 맞춤 */
+  
+  /* 리뷰가 없을 때 메시지 */
   .empty-message {
     color: #9ca3af;
     font-size: 13px;
     text-align: center;
     padding: 24px 0 8px;
   }
+
+  /* 모달 내의 리뷰 목록은 스크롤되도록 */
   ${ReviewList} {
     margin-top: 10px;
     max-height: 250px;
@@ -228,15 +231,17 @@ export default function VenueDetail() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState(null);
 
+  // 👈 6. 좌석 클릭 시 실행될 함수
   const handleSeatClick = (seatId) => {
-    setSelectedSeat(seatId);
-    setReviewModalOpen(true);
+    setSelectedSeat(seatId);  // (1) 선택한 좌석 ID 저장
+    setReviewModalOpen(true); // (2) 리뷰 작성 모달 열기
   };
 
+  // 👈 7. 리뷰 폼 제출 시 실행될 함수
   const handleAddReview = (newReview) => {
-    setReviews([newReview, ...reviews]);
-    setReviewModalOpen(false);
-    setSelectedSeat(null);
+    setReviews([newReview, ...reviews]); // (1) 리뷰 목록에 추가
+    setReviewModalOpen(false); // (2) 리뷰 작성 모달 닫기
+    setSelectedSeat(null); // (3) 선택한 좌석 초기화
   };
 
   const reviewsForSeat = reviews.filter((r) => r.seat === selectedSeat);
@@ -271,8 +276,11 @@ export default function VenueDetail() {
         <TopLayout>
           <SeatMapBox>
             <SeatMapHeader>좌석 배치도</SeatMapHeader>
+            {/* placeholder 텍스트와 <SeatMapBody> 대신 
+              SeatingChart 컴포넌트를 렌더링합니다.
+            */}
             <SeatingChart
-              layout={venue.seatingLayout}
+              layout={venue.seatingLayout || [[]]} // layout이 없을 경우 에러 방지
               onSeatClick={handleSeatClick}
               reviews={reviews}
             />
@@ -340,11 +348,13 @@ export default function VenueDetail() {
         </ReviewSection>
       </Wrapper>
 
+      {/* 👈 10. 리뷰 작성 모달 렌더링 */}
       <Modal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
         title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰"}
       >
+        {/* (1) 이 좌석의 리뷰 목록 */}
         {reviewModalOpen && (
           <ReviewForm seatId={selectedSeat} onSubmit={handleAddReview} />
         )}
