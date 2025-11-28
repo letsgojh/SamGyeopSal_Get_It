@@ -95,13 +95,16 @@ const FundingCount = styled.p`
 
 const FundingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* 기존: repeat(4, ...) 에서 3개만 보이도록 살짝 줄임 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 
+  /* 화면이 조금 줄어들면 2개 */
   @media (max-width: 1280px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* 태블릿/모바일에서는 1개 */
   @media (max-width: 960px) {
     grid-template-columns: 1fr;
   }
@@ -118,11 +121,11 @@ const FundingCard = styled.article`
 
 const FundingThumb = styled.div`
   width: 100%;
-  padding-top: 70%;
-  background-position: center;
+  padding-top: 85%;
+  background-position: center 35%;   /* ⭐ 핵심! 중심보다 아래로 */
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: #e5e7eb; /* 이미지 없어도 디자인 안 깨지도록 */
+  background-color: #e5e7eb;
 `;
 
 const FundingBody = styled.div`

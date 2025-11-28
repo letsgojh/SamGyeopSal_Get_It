@@ -79,6 +79,13 @@ const BrandLink = styled(NavLink)`
   }
 `;
 
+const LogoImg = styled.img`
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 8px;
+`;
+
 const Item = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -103,7 +110,7 @@ export default function Sidebar({ user, onLoginClick, onLogoutClick }) {
   return (
     <Aside>
       <BrandLink to="/" end>
-        <span role="img" aria-label="ticket">🎟️</span>
+        <LogoImg src="/posters/logo.png" alt="Rhyview 로고" />
         <span>Rhyview</span>
       </BrandLink>
 

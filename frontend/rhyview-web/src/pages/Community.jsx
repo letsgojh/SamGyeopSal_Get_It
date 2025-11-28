@@ -27,7 +27,7 @@ const Grid2 = styled.div`
 const ShowGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px;
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -39,26 +39,26 @@ const ShowGrid = styled.div`
 
 const ShowCard = styled.div`
   display: flex;
-  align-items: center;
-  gap: 16px;
-  border-radius: 16px;
+  align-items: flex-start;
+  gap: 20px;
+  border-radius: 18px;
   border: 1px solid var(--line);
   background: #ffffff;
-  padding: 14px 16px;
+  padding: 20px 22px;
   cursor: pointer;
   transition: box-shadow 0.15s ease, transform 0.1s ease;
 
   &:hover {
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
 `;
 
 const ShowThumb = styled.div`
   flex-shrink: 0;
-  width: 96px;
-  height: 72px;
-  border-radius: 12px;
+  width: 140px;      /* 가로 늘림 */
+  height: 200px;     /* 세로 크게 늘림 → 세로 포스터 잘 보임 */
+  border-radius: 14px;
   background-color: #e5e7eb;
   background-position: center;
   background-size: cover;
@@ -69,29 +69,29 @@ const ShowContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 `;
 
 const ShowTitle = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
 `;
 
 const ShowVenue = styled.div`
-  font-size: 12px;
+  font-size: 13px;
   color: #6b7280;
 `;
 
 const ShowPeriod = styled.div`
-  font-size: 11px;
+  font-size: 12px;
   color: #9ca3af;
 `;
 
 const ShowStatRow = styled.div`
-  margin-top: 6px;
+  margin-top: 8px;
   display: flex;
-  gap: 12px;
-  font-size: 11px;
+  gap: 14px;
+  font-size: 12px;
   color: #6b7280;
 `;
 
@@ -275,7 +275,7 @@ const showCommunities = [
     period: "2024.11.15 ~ 2025.02.28",
     members: "1,245",
     likes: "8,920",
-    image: "",
+    image: "/posters/opera.jpg",
   },
   {
     id: 2,
@@ -284,7 +284,7 @@ const showCommunities = [
     period: "2024.12.01 ~ 2025.03.31",
     members: "890",
     likes: "5,420",
-    image: "",
+    image: "/posters/les.jpg",
   },
   {
     id: 3,
@@ -293,7 +293,7 @@ const showCommunities = [
     period: "2024.12.15 ~ 2024.12.20",
     members: "2,890",
     likes: "15,780",
-    image: "",
+    image: "/posters/iu.jpg",
   },
   {
     id: 4,
@@ -302,7 +302,7 @@ const showCommunities = [
     period: "2025.01.05 ~ 2025.01.06",
     members: "620",
     likes: "3,210",
-    image: "",
+    image: "/posters/touched.jpg",
   },
   {
     id: 5,
@@ -311,7 +311,7 @@ const showCommunities = [
     period: "2025.02.01 ~ 2025.05.31",
     members: "980",
     likes: "7,540",
-    image: "",
+    image: "/posters/beauty.jpg",
   },
   {
     id: 6,
@@ -320,7 +320,7 @@ const showCommunities = [
     period: "2025.03.10 ~ 2025.03.12",
     members: "1,530",
     likes: "9,120",
-    image: "",
+    image: "/posters/disney.jpg",
   },
   {
     id: 7,
@@ -329,7 +329,7 @@ const showCommunities = [
     period: "2025.04.01 ~ 2025.06.30",
     members: "2,310",
     likes: "12,480",
-    image: "",
+    image: "/posters/juice.jpeg",
   },
   {
     id: 8,
@@ -338,7 +338,7 @@ const showCommunities = [
     period: "2025.05.03 ~ 2025.05.05",
     members: "4,520",
     likes: "20,310",
-    image: "",
+    image: "/posters/deathnote.jpg",
   },
 ];
 
