@@ -1,5 +1,3 @@
-// src/data/fundings.js
-
 export const fundings = [
   {
     id: 1,
@@ -9,7 +7,7 @@ export const fundings = [
     progress: 158,
     amount: "3,170,000원",
     dday: "2일 남음",
-    image: "/posters/adult.webp", // 필요하면 나중에 실제 이미지 경로 넣기
+    image: "/posters/adult.webp", 
   },
   {
     id: 2,
@@ -19,7 +17,7 @@ export const fundings = [
     progress: 44,
     amount: "674,000원",
     dday: "8일 남음",
-    image: "",
+    image: "/posters/grue.jpg",
   },
   {
     id: 3,
@@ -50,7 +48,7 @@ export const fundings = [
     progress: 23,
     amount: "310,000원",
     dday: "13일 남음",
-    image: "",
+    image: "/posters/night.jpg",
   },
 
   {
@@ -61,7 +59,7 @@ export const fundings = [
     progress: 37,
     amount: "520,000원",
     dday: "18일 남음",
-    image: "",
+    image: "/posters/rain.jpg",
   },
 
 ];

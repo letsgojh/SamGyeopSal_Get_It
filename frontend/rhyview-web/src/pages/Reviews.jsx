@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom"; // ❗ Link 컴포넌트 추가
+import { useNavigate } from "react-router-dom"; 
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import { venues } from "../data/venues"; // ❗ venues 데이터 import
+import { venues } from "../data/venues"; 
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -76,7 +76,6 @@ export default function Reviews( {favorites = [], onToggleFavorite} ) {
   const [activeTab, setActiveTab] = useState("전체");
   const [search, setSearch] = useState("");
 
-  // ❗ 필터링 로직: 카테고리 & 검색어
   const filtered = venues.filter((v) => {
     const matchTab = activeTab === "전체" || v.category === activeTab;
     const matchSearch = v.name.toLowerCase().includes(search.toLowerCase()) ||
