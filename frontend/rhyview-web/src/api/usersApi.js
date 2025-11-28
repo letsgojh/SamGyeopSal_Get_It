@@ -20,3 +20,16 @@ export const getUserInfo = async (token) => {
     return null;
   }
 };
+
+// 3. 회원가입 함수
+export const signupUser = async (userData) => {
+  // userData = { name, email, password }
+  try {
+    const res = await axios.post(`${API_BASE}/users/signup`, userData);
+    return res.data;
+  } catch (error) {
+    // 에러 메시지를 백엔드에서 받아와서 던짐
+    const message = error.response?.data?.message || "회원가입에 실패했습니다.";
+    throw new Error(message);
+  }
+};

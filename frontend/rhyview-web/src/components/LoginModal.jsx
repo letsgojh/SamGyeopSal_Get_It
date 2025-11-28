@@ -1,12 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { loginUser, getUserInfo } from "../api/usersApi"; 
+import { loginUser, getUserInfo } from "../api/usersApi";
+import { Link } from "react-router-dom";
 
 // ... (스타일 컴포넌트 생략 - 기존 유지) ...
 const Form = styled.form` padding: 24px; display: flex; flex-direction: column; gap: 16px; `;
 const Input = styled.input` width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #f9fafb; `;
 const Button = styled.button` background: var(--brand); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; `;
 const ErrorMsg = styled.div` color: #ef4444; font-size: 13px; text-align: center; margin-top: -8px; `;
+
+const FooterText = styled.div`
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+  
+  a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+    &:hover { text-decoration: underline; }
+  }
+`;
 
 export default function LoginModal({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -26,11 +42,11 @@ export default function LoginModal({ onLogin }) {
     try {
       setLoading(true);
       console.log("🚀 1. 로그인 시도...");
-      
+
       // 1. 로그인 요청
       const loginData = await loginUser(email, password);
       console.log("✅ 2. 로그인 성공:", loginData);
-      
+
       const token = loginData.token;
       if (!token) throw new Error("토큰이 없습니다.");
 
@@ -40,15 +56,15 @@ export default function LoginModal({ onLogin }) {
 
       // 백업 로직
       if (!userInfo && loginData.user) {
-         userInfo = loginData.user;
+        userInfo = loginData.user;
       }
-      
+
       // 🚨 안전장치: userInfo가 없으면 빈 객체라도 사용
       const safeUserInfo = userInfo || { id: 0, name: "알 수 없음", email: "" };
 
       // 3. 최종 데이터 조합
       const userToSave = {
-        ...safeUserInfo, 
+        ...safeUserInfo,
         token: token,
         avatar: "https://cdn-icons-png.flaticon.com/512/847/847969.png"
       };
@@ -57,17 +73,17 @@ export default function LoginModal({ onLogin }) {
 
       // ⭐️ 여기가 핵심! onLogin 실행 중 에러가 나는지 확인
       if (typeof onLogin === 'function') {
-          try {
-              onLogin(userToSave);
-              console.log("✅ 5. onLogin 실행 완료 (모달 닫혀야 함)");
-          } catch (innerErr) {
-              console.error("🚨 onLogin 함수 내부에서 에러 발생:", innerErr);
-              // 여기서 에러가 나도 이미 setUser는 되었을 수 있음.
-              // 이 에러는 무시하거나, 별도로 처리해야 함.
-          }
+        try {
+          onLogin(userToSave);
+          console.log("✅ 5. onLogin 실행 완료 (모달 닫혀야 함)");
+        } catch (innerErr) {
+          console.error("🚨 onLogin 함수 내부에서 에러 발생:", innerErr);
+          // 여기서 에러가 나도 이미 setUser는 되었을 수 있음.
+          // 이 에러는 무시하거나, 별도로 처리해야 함.
+        }
       } else {
-          console.error("🚨 onLogin prop이 함수가 아닙니다!", onLogin);
-          throw new Error("로그인 처리 함수가 연결되지 않았습니다.");
+        console.error("🚨 onLogin prop이 함수가 아닙니다!", onLogin);
+        throw new Error("로그인 처리 함수가 연결되지 않았습니다.");
       }
 
     } catch (err) {
@@ -85,6 +101,14 @@ export default function LoginModal({ onLogin }) {
       <Input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
       {error && <ErrorMsg>{error}</ErrorMsg>}
       <Button type="submit" disabled={loading}>{loading ? "로그인 중..." : "로그인"}</Button>
+
+      <FooterText>
+        계정이 없으신가요?
+        {/* 모달 안에서 Link를 누르면 모달이 닫히지는 않지만 페이지는 이동합니다. 
+            UX를 위해 이동 후 모달을 닫는 처리가 필요할 수 있습니다. 
+            일단은 간단하게 Link로 연결합니다. */}
+        <Link to="/signup" onClick={() => window.location.href = '/signup'}>회원가입</Link>
+      </FooterText>
     </Form>
   );
 }
