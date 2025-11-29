@@ -38,7 +38,7 @@ export const createReview = async (showId, reviewData, token) => {
       reviewData,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    return res.data;
+    return res.reviewData;
   } catch (error) {
     console.error("리뷰 작성 실패:", error);
     throw error;

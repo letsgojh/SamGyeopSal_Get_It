@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
-import { getVenues, API_BASE } from "../api/venuesApi"; // ✅ API 함수 임포트
+
+// ✅ API 함수 임포트 (getShows 추가)
+import { getVenues, API_BASE } from "../api/venuesApi"; 
+import { getShows } from "../api/showApi"; // 👈 이 함수가 필요합니다!
 
 const Section = styled.section`
   padding: 24px 32px;
@@ -69,34 +72,59 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
   const [activeTab, setActiveTab] = useState("전체");
   const [search, setSearch] = useState("");
 
-  // ✅ 1. DB 데이터를 담을 state 생성
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ 2. 컴포넌트 실행 시 백엔드에서 데이터 가져오기 (getVenues)
+  // ✅ 데이터 병합 로직
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await getVenues(); // 전체 조회 API 호출
-      if (data) {
-        setVenues(data);
+      try {
+        // 1. 공연장과 공연 데이터를 동시에 가져옵니다.
+        const [venuesData, showsData] = await Promise.all([
+          getVenues(),
+          getShows() // 모든 공연 목록을 가져와야 함
+        ]);
+
+        // 2. 각 공연장에 해당하는 공연들의 카테고리를 찾아서 합칩니다.
+        const mergedVenues = (venuesData || []).map(venue => {
+          // 이 공연장에서 열리는 공연들 찾기 (venue_id 기준)
+          const relatedShows = (showsData || []).filter(show => show.venue_id === venue.id);
+
+          // 중복 제거된 카테고리 목록 추출 (예: ["뮤지컬", "콘서트"])
+          const categories = [...new Set(relatedShows.map(show => show.category).filter(Boolean))];
+
+          // 공연장 객체에 categories 속성 추가
+          return {
+            ...venue,
+            categories: categories.length > 0 ? categories : ["공연장"] // 없으면 기본값
+          };
+        });
+
+        setVenues(mergedVenues);
+      } catch (error) {
+        console.error("데이터 로딩 실패:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchData();
   }, []);
 
-  // ✅ 3. 필터링 로직 (DB에서 가져온 venues 데이터 사용)
+  // ✅ 필터링 로직 수정 (병합된 categories 활용)
   const filtered = venues.filter((v) => {
-    // DB에 category가 없으면 기본값 '전체'로 취급하거나 '공연장' 등으로 처리
-    const vCategory = v.category || "기타";
+    // 1. 탭 필터: 해당 공연장이 가진 카테고리 중에 탭 이름이 포함되어 있는지 확인
+    const vCategories = v.categories || [];
+    
+    // "전체"이거나, 공연장의 카테고리 목록에 현재 탭이 포함되어 있으면 통과
+    // 또는 '경기장', '소극장' 같은 원래 카테고리가 DB에 있었다면 그것도 체크
+    const matchTab = activeTab === "전체" || 
+                     vCategories.includes(activeTab) || 
+                     v.category === activeTab;
 
-    const matchTab = activeTab === "전체" || vCategory === activeTab;
-
-    // DB 컬럼이 name, address 이므로 이에 맞춰 검색 로직 수정
+    // 2. 검색 필터
     const vName = v.name || "";
     const vLocation = v.address || "";
-
     const matchSearch = vName.toLowerCase().includes(search.toLowerCase()) ||
       vLocation.toLowerCase().includes(search.toLowerCase());
 
@@ -123,37 +151,29 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
         </ControlsRow>
 
         <Grid2>
-          {filtered.map((v) => (
-            <Card
-              key={v.id}
-              id={v.id}
+          {filtered.map((v) => {
+            // 뱃지에 표시할 대표 카테고리 선정 (첫 번째 것 사용)
+            const mainCategory = v.categories && v.categories.length > 0 ? v.categories[0] : (v.category || "공연장");
+            
+            return (
+              <Card
+                key={v.id}
+                id={v.id}
+                image={"https://via.placeholder.com/300?text=Venue"}
+                title={v.name}
+                subtitle={v.address}
+                
+                // ✅ show 데이터를 참조해 만든 카테고리 표시
+                badge={mainCategory}
+                badgeColor={getBadgeColor(mainCategory)}
 
-              // 1. 이미지가 없으므로 기본 이미지 사용
-              image={"https://via.placeholder.com/300?text=Venue"}
-
-              // 2. DB의 name -> Card의 title
-              title={v.name}
-
-              // 3. DB의 address -> Card의 subtitle
-              subtitle={v.address}
-
-              // 4. 카테고리가 없으면 '공연장' 표시
-              badge={v.category || "공연장"}
-              badgeColor={getBadgeColor(v.category)}
-
-              // 5. 평점이 없으면 0.0 표시
-              period={`⭐ ${v.rating || "0.0"} (${v.reviewCount || 0}개 리뷰)`}
-
-              // 6. [핵심] 클릭 시 상세 페이지로 이동!
-              // 여기서 이동하면 VenueDetail.jsx가 실행되면서 'getVenueById(단건 조회)'를 호출합니다.
-              onClick={() => navigate(`/venues/${v.id}`)}
-
-              // ✅ [수정] 식별자: venue-ID
-              isFavorite={favorites.includes(`venue-${v.id}`)}
-              // ✅ [수정] 타입 전달: 'venue'
-              onToggleFavorite={() => onToggleFavorite(v.id, 'venue')}
-            />
-          ))}
+                period={`⭐ ${v.rating || "0.0"} (${v.reviewCount || 0}개 리뷰)`}
+                onClick={() => navigate(`/venues/${v.id}`)}
+                isFavorite={favorites.includes(`venue-${v.id}`)}
+                onToggleFavorite={() => onToggleFavorite(v.id, 'venue')}
+              />
+            );
+          })}
           {filtered.length === 0 && (
             <div style={{ fontSize: 13, color: "#9ca3af", gridColumn: "1 / -1", textAlign: "center", padding: "40px 0" }}>
               조건에 맞는 공연장이 없습니다.
