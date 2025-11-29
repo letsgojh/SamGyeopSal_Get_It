@@ -84,32 +84,6 @@
 git clone https://github.com/letsgojh/SamGyeopSal_Get_It.git
 cd SamGyeopSal_Get_It
 ```
-
-## DB 초기화 방법
-
-1. .env설정(./backend/.)
-
-    ```bash
-    DB_HOST=localhost
-    DB_PORT=3306
-    DB_USER=root
-    DB_PASS=[비밀번호]
-    DB_NAME=theater_app
-    JWT_SECRET=my_screct_password
-    ```
-
-2. schema + dummy_data 생성
-
-    ```bash
-    cd backend
-    npm run db:init
-    ```
-
-<br>
-
-<br>
-
-
 ## 실행 방법
 
 - Backend
@@ -133,6 +107,31 @@ npm install react-router-dom
 npm run dev
 ```
 
+
+<br>
+
+<br>
+
+
+## DB 초기화 방법
+
+1. .env설정(./backend/.)
+
+    ```bash
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_USER=root
+    DB_PASS=[비밀번호]
+    DB_NAME=theater_app
+    JWT_SECRET=my_screct_password
+    ```
+
+2. schema + dummy_data 생성
+
+    ```bash
+    cd backend
+    npm run db:init
+    ```
 
 <br>
 
