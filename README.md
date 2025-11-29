@@ -121,10 +121,10 @@ npm run start
 - Frontend
 
 ```bash
-cd frontend
+cd frontend/rhyview-web
 npm install
-npm install vite
-npm start
+npm install react-router-dom
+npm run dev
 ```
 
 
