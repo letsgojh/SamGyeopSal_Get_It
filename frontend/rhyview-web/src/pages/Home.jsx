@@ -107,10 +107,9 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badgeColor={getBadgeColor(show.category)}
 
               onClick={() => setSelectedAd(show)}
-              // ✅ [수정] 확인: "show-" + id가 있는지 확인
+              // ✅ [수정] 식별자: show-ID
               isFavorite={favorites.includes(`show-${show.id}`)}
-
-              // ✅ [수정] 토글: 두 번째 인자로 'show' 전달
+              // ✅ [수정] 타입 전달: 'show'
               onToggleFavorite={() => onToggleFavorite(show.id, 'show')}
             />
           ))}
@@ -158,10 +157,9 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badge={"Venue"}
               badgeColor={"#6b7280"}
               onClick={() => navigate(`/venues/${venue.id}`)}
-              // ✅ [수정] 확인: "venue-" + id가 있는지 확인
+              // ✅ [수정] 식별자: venue-ID
               isFavorite={favorites.includes(`venue-${venue.id}`)}
-
-              // ✅ [수정] 토글: 두 번째 인자로 'venue' 전달
+              // ✅ [수정] 타입 전달: 'venue'
               onToggleFavorite={() => onToggleFavorite(venue.id, 'venue')}
             />
           ))}

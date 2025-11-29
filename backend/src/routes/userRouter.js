@@ -112,7 +112,7 @@ router.get("/me", authMiddleware, getMe);
  *       401:
  *         description: 인증 실패
  */
-router.get("/favorites", authMiddleware, addFavoriteShow);
+router.get("/favorites", authMiddleware, seeUserFavoriteShows);
 
 
 /**
@@ -136,7 +136,7 @@ router.get("/favorites", authMiddleware, addFavoriteShow);
  *       401:
  *         description: 인증 실패
  */
-router.post("/favorites/:showId", authMiddleware, seeUserFavoriteShows);
+router.post("/favorites/:showId", authMiddleware, addFavoriteShow);
 
 
 /**

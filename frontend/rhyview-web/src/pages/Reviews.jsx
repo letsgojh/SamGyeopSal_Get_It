@@ -148,7 +148,9 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
               // 여기서 이동하면 VenueDetail.jsx가 실행되면서 'getVenueById(단건 조회)'를 호출합니다.
               onClick={() => navigate(`/venues/${v.id}`)}
 
+              // ✅ [수정] 식별자: venue-ID
               isFavorite={favorites.includes(`venue-${v.id}`)}
+              // ✅ [수정] 타입 전달: 'venue'
               onToggleFavorite={() => onToggleFavorite(v.id, 'venue')}
             />
           ))}
