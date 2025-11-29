@@ -36,3 +36,19 @@ export const getVenueById = async (venueId) => {
     return null;
   }
 };
+
+// 공연장 통계(평점, 리뷰수) 가져오기
+export const getVenueStats = async (venueId) => {
+  try {
+    // 위에서 만든 백엔드 API 호출
+    const res = await axios.get(`${API_BASE}/venues/${venueId}/stats`);
+    
+    if (res.data && res.data.data) {
+        return res.data.data; // { reviewCount: 5, averageRating: 4.5 }
+    }
+    return null;
+  } catch (error) {
+    console.error("통계 조회 실패:", error);
+    return { reviewCount: 0, averageRating: 0 };
+  }
+};

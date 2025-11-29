@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
     showVenuesList,
     showDetailVenue,
-    showVenuebyshow
+    showVenuebyshow,
+    getVenueStats
 } from "../controllers/venueController.js";
 
 const router = Router();
@@ -70,6 +71,8 @@ router.get("/:id", showDetailVenue);
  *         description: 공연 또는 공연장 정보를 찾을 수 없음
  */
 router.get("/:id/shows", showVenuebyshow);
+
+router.get('/:id/stats', getVenueStats); 
 
 
 export default router;
