@@ -25,7 +25,7 @@ CREATE TABLE venues (
     image_url VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     review_count INT,
-    review_rating FLOAT
+    review_rating FLOAT(3,1)
 );
 
 
