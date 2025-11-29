@@ -85,7 +85,9 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
               <Card
                 key={v.id}
                 id={v.id}
-                image={"https://via.placeholder.com/300?text=Venue"}
+                image={v.image_url?.startsWith("/") 
+                  ? `http://localhost:3000${v.image_url}`
+                  : v.image_url || "https://via.placeholder.com/300?text=Venue"}
                 title={v.name}
                 subtitle={v.address}
                 
@@ -93,7 +95,7 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
                 badge={mainCategory}
                 badgeColor={getBadgeColor(mainCategory)}
 
-                period={`⭐ ${v.rating || "0.0"} (${v.reviewCount || 0}개 리뷰)`}
+                period={`⭐ ${v.review_rating || "0.0"} (${v.review_count || 0}개 리뷰)`}
                 onClick={() => navigate(`/venues/${v.id}`)}
                 isFavorite={favorites.includes(`venue-${v.id}`)}
                 onToggleFavorite={() => onToggleFavorite(v.id, 'venue')}
