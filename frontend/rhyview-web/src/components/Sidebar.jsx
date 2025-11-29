@@ -130,7 +130,13 @@ export default function Sidebar({ user, onLoginClick, onLogoutClick }) {
           <Heart size={16} />
           <span>팬</span>
         </Item>
-        <Item to="/ticket"><Ticket size={16} /><span>티켓</span></Item>
+        <Item
+          to="/tickets"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          <Ticket size={16} />
+          <span>티켓</span>
+        </Item>
       </div>
 
       {/* 로그인 부분 */}

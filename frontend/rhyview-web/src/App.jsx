@@ -9,6 +9,8 @@ import VenueDetail from "./pages/VenueDetail";
 import Favorites from "./pages/Favorites";
 import Modal from "./components/Modal";
 import LoginModal from "./components/LoginModal";
+import Tickets from "./pages/Tickets";
+
 
 export default function App() {
   const [favorites, setFavorites] = useState([]);
@@ -81,6 +83,7 @@ export default function App() {
               }
             />
             <Route path="/venues/:id" element={<VenueDetail />} />
+            <Route path="/tickets" element={<Tickets />} />
           </Routes>
         </Main>
       </AppShell>
