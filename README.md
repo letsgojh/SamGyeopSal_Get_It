@@ -115,6 +115,8 @@ npm run dev
 
 ## DB 초기화 방법
 
+0. MySQL 설치
+
 1. .env설정(./backend/.)
 
     ```bash
@@ -132,7 +134,6 @@ npm run dev
     cd backend
     npm run db:init
     ```
-
 <br>
 
 <br>
