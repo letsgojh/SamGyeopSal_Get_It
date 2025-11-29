@@ -107,8 +107,11 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badgeColor={getBadgeColor(show.category)}
 
               onClick={() => setSelectedAd(show)}
-              isFavorite={favorites.includes(show.id)}
-              onToggleFavorite={onToggleFavorite}
+              // ✅ [수정] 확인: "show-" + id가 있는지 확인
+              isFavorite={favorites.includes(`show-${show.id}`)}
+
+              // ✅ [수정] 토글: 두 번째 인자로 'show' 전달
+              onToggleFavorite={() => onToggleFavorite(show.id, 'show')}
             />
           ))}
           {shows.length === 0 && (
@@ -144,7 +147,7 @@ export default function Home({ favorites = [], onToggleFavorite }) {
         </div>
         <Grid3>
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
-          {venues.slice(0,3).map((venue) => (
+          {venues.slice(0, 3).map((venue) => (
             <Card
               key={venue.id}
               id={venue.id}
@@ -155,8 +158,11 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badge={"Venue"}
               badgeColor={"#6b7280"}
               onClick={() => navigate(`/venues/${venue.id}`)}
-              isFavorite={favorites.includes(venue.id)}
-              onToggleFavorite={onToggleFavorite}
+              // ✅ [수정] 확인: "venue-" + id가 있는지 확인
+              isFavorite={favorites.includes(`venue-${venue.id}`)}
+
+              // ✅ [수정] 토글: 두 번째 인자로 'venue' 전달
+              onToggleFavorite={() => onToggleFavorite(venue.id, 'venue')}
             />
           ))}
         </Grid3>

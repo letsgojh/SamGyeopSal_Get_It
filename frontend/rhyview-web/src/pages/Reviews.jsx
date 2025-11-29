@@ -68,7 +68,7 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
   const tabs = ["전체", "뮤지컬", "콘서트", "연극", "클래식", "경기장", "소극장"];
   const [activeTab, setActiveTab] = useState("전체");
   const [search, setSearch] = useState("");
-  
+
   // ✅ 1. DB 데이터를 담을 state 생성
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,17 +89,17 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
   // ✅ 3. 필터링 로직 (DB에서 가져온 venues 데이터 사용)
   const filtered = venues.filter((v) => {
     // DB에 category가 없으면 기본값 '전체'로 취급하거나 '공연장' 등으로 처리
-    const vCategory = v.category || "기타"; 
-    
+    const vCategory = v.category || "기타";
+
     const matchTab = activeTab === "전체" || vCategory === activeTab;
-    
+
     // DB 컬럼이 name, address 이므로 이에 맞춰 검색 로직 수정
     const vName = v.name || "";
     const vLocation = v.address || "";
-    
+
     const matchSearch = vName.toLowerCase().includes(search.toLowerCase()) ||
-                        vLocation.toLowerCase().includes(search.toLowerCase());
-                        
+      vLocation.toLowerCase().includes(search.toLowerCase());
+
     return matchTab && matchSearch;
   });
 
@@ -127,29 +127,29 @@ export default function Reviews({ favorites = [], onToggleFavorite }) {
             <Card
               key={v.id}
               id={v.id}
-              
+
               // 1. 이미지가 없으므로 기본 이미지 사용
               image={"https://via.placeholder.com/300?text=Venue"}
-              
+
               // 2. DB의 name -> Card의 title
               title={v.name}
-              
+
               // 3. DB의 address -> Card의 subtitle
               subtitle={v.address}
-              
+
               // 4. 카테고리가 없으면 '공연장' 표시
               badge={v.category || "공연장"}
               badgeColor={getBadgeColor(v.category)}
-              
+
               // 5. 평점이 없으면 0.0 표시
               period={`⭐ ${v.rating || "0.0"} (${v.reviewCount || 0}개 리뷰)`}
-              
+
               // 6. [핵심] 클릭 시 상세 페이지로 이동!
               // 여기서 이동하면 VenueDetail.jsx가 실행되면서 'getVenueById(단건 조회)'를 호출합니다.
               onClick={() => navigate(`/venues/${v.id}`)}
-              
-              isFavorite={favorites.includes(v.id)}
-              onToggleFavorite={onToggleFavorite}
+
+              isFavorite={favorites.includes(`venue-${v.id}`)}
+              onToggleFavorite={() => onToggleFavorite(v.id, 'venue')}
             />
           ))}
           {filtered.length === 0 && (
