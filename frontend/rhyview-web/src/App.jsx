@@ -9,9 +9,11 @@ import VenueDetail from "./pages/VenueDetail";
 import Favorites from "./pages/Favorites";
 import Modal from "./components/Modal";
 import LoginModal from "./components/LoginModal";
+
 import Signup from "./pages/Signup";
 
 import { getUserInfo, getUserFavorites, addFavorite, removeFavorite } from "./api/usersApi";
+
 
 export default function App() {
   // ["show-1", "venue-2"] 형태로 저장됨
