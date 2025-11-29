@@ -74,7 +74,7 @@
 
 <br>
 
-![alt text](image.png)
+![ERD](./docs/image.png)
 
 <br>
 
