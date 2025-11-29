@@ -61,3 +61,30 @@ export const showVenuebyshow = async(req,res,next)=>{
     }
 
 }
+// 공연장 평점 및 리뷰 개수 통계
+export const getVenueStats = async (req, res, next) => {
+    const venueId = Number(req.params.id);
+
+    if (isNaN(venueId)) {
+        return next(new HttpError(400, "Invalid venue ID"));
+    }
+
+    try {
+        // reviews 테이블에서 venue_id가 일치하는 모든 항목의 개수와 평점 평균 계산
+        const sql = `
+            SELECT 
+                COUNT(*) as reviewCount, 
+                IFNULL(AVG(rating), 0) as averageRating 
+            FROM reviews 
+            WHERE venue_id = ?
+        `;
+        
+        const [rows] = await pool.execute(sql, [venueId]);
+        
+        // 결과 반환 (배열의 첫 번째 요소)
+        res.status(200).json({ data: rows[0] });
+
+    } catch (err) {
+        next(new HttpError(500, "Internal Server Error"));
+    }
+};

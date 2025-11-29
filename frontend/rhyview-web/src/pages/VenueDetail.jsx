@@ -8,8 +8,8 @@ import Modal from "../components/Modal";
 import ReviewForm from "../components/ReviewForm";
 
 // API 함수
-import { getVenueById } from "../api/venuesApi";
 import { getSeats, getSeatReviews, createReview } from "../api/seatsApi";
+import { getVenueById, getVenueStats } from "../api/venuesApi"; 
 
 // =============================================================================
 // [스타일 유지] 
@@ -234,15 +234,27 @@ export default function VenueDetail() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const venueData = await getVenueById(id);
+        // 병렬로 데이터 요청 (기본정보 + 통계)
+        const [venueData, statsData] = await Promise.all([
+            getVenueById(id),
+            getVenueStats(id) // ✅ 추가된 API 호출
+        ]);
+
         if (venueData) {
+          // 통계 데이터가 있으면 사용, 없으면 0 처리
+          const rating = statsData ? Number(statsData.averageRating).toFixed(1) : "0.0";
+          const count = statsData ? statsData.reviewCount : 0;
+
           setVenue({
             ...venueData,
             name: venueData.name,
             location: venueData.address,
             category: "공연장",
-            rating: "0.0",
-            reviewCount: 0,
+            
+            // ✅ DB에서 가져온 값으로 교체
+            rating: rating,
+            reviewCount: count,
+            
             shortDesc: "좌석 배치도와 리뷰를 확인하세요.",
             seatingLayout: [[]],
           });
