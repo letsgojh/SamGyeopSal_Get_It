@@ -204,7 +204,7 @@ const handleUnfavorite = async (id, type) => {
           찜 목록
         </Tab>
         <Tab $active={activeTab === "fan"} onClick={() => setActiveTab("fan")}>
-          팬 (후원)
+          펀딩
         </Tab>
       </Tabs>
 
