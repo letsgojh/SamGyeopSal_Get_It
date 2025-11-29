@@ -150,7 +150,11 @@ export default function Home({ favorites = [], onToggleFavorite }) {
             <Card
               key={venue.id}
               id={venue.id}
-              image={"https://via.placeholder.com/300?text=Venue"}
+              image={
+                venue.image_url
+                  ? `http://localhost:3000${venue.image_url.replace(".jpg", ".png")}`
+                  : "https://via.placeholder.com/300?text=Venue"
+              }
               title={venue.name}
               subtitle={venue.address}
               period={"공연장"}

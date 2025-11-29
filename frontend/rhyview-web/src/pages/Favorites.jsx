@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
+import { removeFavorite } from "../api/usersApi";
+
 
 // ✅ API 및 데이터 임포트
 import { getUserFavorites } from "../api/usersApi"; 
@@ -170,18 +172,26 @@ export default function Favorites({ user, onToggleFavorite }) {
   };
 
   // 3. 찜 해제 핸들러
-  const handleUnfavorite = (id, type) => {
-      if (!id) return;
+const handleUnfavorite = async (id, type) => {
+  if (!id) return;
 
-      if (type === 'show') {
-          setFavoriteShows(prev => prev.filter(s => s.id !== id));
-      } else {
-          setFavoriteVenues(prev => prev.filter(v => v.id !== id));
-      }
-      const uniqueId = `${type}-${id}`; 
-      onToggleFavorite(uniqueId);
-  };
+  const token = localStorage.getItem("token");
 
+  try {
+    // 🔥 DB에서 실제 삭제
+    await removeFavorite(id, token);
+  } catch (err) {
+    console.error("찜 삭제 API 실패:", err);
+    return;
+  }
+
+  // 🔥 프론트 상태에서도 제거
+  if (type === 'show') {
+    setFavoriteShows(prev => prev.filter(s => s.id !== id));
+  } else {
+    setFavoriteVenues(prev => prev.filter(v => v.id !== id));
+  }
+};
   if (loading) return <Section>로딩 중...</Section>;
 
   return (
