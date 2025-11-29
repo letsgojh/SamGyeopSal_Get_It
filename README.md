@@ -95,11 +95,13 @@ cd SamGyeopSal_Get_It
     DB_USER=root
     DB_PASS=[비밀번호]
     DB_NAME=theater_app
+    JWT_SECRET=my_screct_password
     ```
 
 2. schema + dummy_data 생성
 
     ```bash
+    cd backend
     npm run db:init
     ```
 
@@ -113,18 +115,21 @@ cd SamGyeopSal_Get_It
 - Backend
 
 ```bash
-cd backend
-npm install
-npm run start
+npm init -y
+npm install 
+npm install express nodemon mysql2 cors dotenv helmet morgan bcrypt jsonwebtoken
+npm install swagger-ui-express swagger-jsdoc
+npm run dev
 ```
 
 - Frontend
 
 ```bash
-cd frontend
+cd frontend/rhyview-web
+npm init -y
 npm install
-npm install vite
-npm start
+npm install react-router-dom
+npm run dev
 ```
 
 

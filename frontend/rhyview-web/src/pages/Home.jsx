@@ -107,8 +107,10 @@ export default function Home({ favorites = [], onToggleFavorite }) {
               badgeColor={getBadgeColor(show.category)}
 
               onClick={() => setSelectedAd(show)}
-              isFavorite={favorites.includes(show.id)}
-              onToggleFavorite={onToggleFavorite}
+              // ✅ [수정] 식별자: show-ID
+              isFavorite={favorites.includes(`show-${show.id}`)}
+              // ✅ [수정] 타입 전달: 'show'
+              onToggleFavorite={() => onToggleFavorite(show.id, 'show')}
             />
           ))}
           {shows.length === 0 && (
@@ -144,19 +146,25 @@ export default function Home({ favorites = [], onToggleFavorite }) {
         </div>
         <Grid3>
           {/* 전체 데이터 맵핑 (여기도 똑같이 DB 컬럼 연결) */}
-          {venues.slice(0,3).map((venue) => (
+          {venues.slice(0, 3).map((venue) => (
             <Card
               key={venue.id}
               id={venue.id}
-              image={"https://via.placeholder.com/300?text=Venue"}
+              image={
+                venue.image_url
+                  ? `http://localhost:3000${venue.image_url.replace(".jpg", ".png")}`
+                  : "https://via.placeholder.com/300?text=Venue"
+              }
               title={venue.name}
               subtitle={venue.address}
               period={"공연장"}
               badge={"Venue"}
               badgeColor={"#6b7280"}
               onClick={() => navigate(`/venues/${venue.id}`)}
-              isFavorite={favorites.includes(venue.id)}
-              onToggleFavorite={onToggleFavorite}
+              // ✅ [수정] 식별자: venue-ID
+              isFavorite={favorites.includes(`venue-${venue.id}`)}
+              // ✅ [수정] 타입 전달: 'venue'
+              onToggleFavorite={() => onToggleFavorite(venue.id, 'venue')}
             />
           ))}
         </Grid3>
