@@ -45,18 +45,22 @@ export const showReviewBySeat = async(req,res,next)=>{
 }
 
 
-//리뷰작성
+// ✅ [수정됨] 리뷰작성
 export const writeSeatReview = async(req,res,next)=>{
     const userId = req.user?.id;
     const showId = Number(req.params.id);
     const seatId = Number(req.params.seatId);
-    const {rating, comment} = req.body;
+    
+    // 🚨 기존 코드: const {rating, comment} = req.body; 
+    // 👉 수정 코드: 프론트엔드가 'content'로 보내므로 'content'로 받아야 합니다.
+    const { rating, content } = req.body; 
 
     if (!userId || isNaN(showId) || isNaN(seatId)) {
         return next(new HttpError(400, "Invalid show or seat ID."));
     }
 
-    if (!rating && !comment) {
+    // comment -> content 로 변경
+    if (!rating && !content) {
         return next(new HttpError(400, "Review contents required."));
     }
 
@@ -65,8 +69,9 @@ export const writeSeatReview = async(req,res,next)=>{
 
         const venueId = rows[0].venue_id;
 
+        // DB 쿼리 파라미터도 comment -> content 로 변경
         await pool.query("INSERT INTO reviews (user_id,show_id,venue_id,seat_id,rating,content) VALUES (?,?,?,?,?,?)"
-            ,[userId,showId,venueId,seatId,rating,comment]
+            ,[userId,showId,venueId,seatId,rating,content]
         );
 
         return res.status(201).json({message : "Review created."});
@@ -76,11 +81,13 @@ export const writeSeatReview = async(req,res,next)=>{
 }
 
 
-//리뷰업데이트
+// ✅ [수정됨] 리뷰업데이트
 export const updateSeatReview = async(req,res,next)=>{
     const reviewId = Number(req.params.id);
     const userId = req.user?.id;
-    const { rating, comment } = req.body;
+    
+    // 🚨 여기도 comment -> content 로 수정
+    const { rating, content } = req.body;
 
     if (isNaN(reviewId)) {
         return next(new HttpError(400, "Invalid review ID."));
@@ -101,14 +108,14 @@ export const updateSeatReview = async(req,res,next)=>{
             return next(new HttpError(403, "You cannot edit this review."));
         }
 
-        // 수정
+        // 수정 쿼리 파라미터도 comment -> content 로 변경
         await pool.query(
             `
             UPDATE reviews
             SET rating = ?, content = ?, updated_at = NOW()
             WHERE id = ?
             `,
-            [rating, comment, reviewId]
+            [rating, content, reviewId]
         );
 
         return res.status(200).json({ message: "Review updated successfully." });
@@ -151,8 +158,3 @@ export const deleteSeatReview = async(req,res,next)=>{
         next(new HttpError(500, "Internal Server Error"));
     }
 }
-
-//리뷰 좋아요 증가
-// export const addReviewLike = async(req,res,next)=>{
-    
-// }

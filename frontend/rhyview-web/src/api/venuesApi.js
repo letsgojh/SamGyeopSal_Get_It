@@ -6,7 +6,7 @@ export const API_BASE = "http://localhost:3000";
 // 1. 전체 공연장 목록 조회 (Home.jsx에서 사용)
 export const getVenues = async () => {
   try {
-    const res = await axios.get(`${API_BASE}/venues`);
+    const res = await axios.get(`${API_BASE}/venues/`);
     console.log("📦 공연장 목록 응답:", res.data);
 
     // 데이터 구조 { data: [...] } 처리
