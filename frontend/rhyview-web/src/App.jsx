@@ -9,6 +9,7 @@ import VenueDetail from "./pages/VenueDetail";
 import Favorites from "./pages/Favorites";
 import Modal from "./components/Modal";
 import LoginModal from "./components/LoginModal";
+import Tickets from "./pages/Tickets";
 
 import Signup from "./pages/Signup";
 
@@ -41,18 +42,15 @@ export default function App() {
     setFavorites(data);
   };
 
-  // ✅ 2. 찜 토글 핸들러 (핵심 수정)
   const handleToggleFavorite = async (id, type) => {
     if (!user) {
       alert("로그인 후 이용해주세요.");
       return;
     }
 
-    // 프론트엔드 식별자 생성 (예: "show-1")
     const uniqueId = `${type}-${id}`;
     const isAlreadyFavorite = favorites.includes(uniqueId);
 
-    // (1) UI 즉시 반영 (낙관적 업데이트)
     setFavorites((prev) =>
       isAlreadyFavorite
         ? prev.filter(item => item !== uniqueId) // 삭제
@@ -105,6 +103,7 @@ export default function App() {
             <Route path="/reviews" element={<Reviews favorites={favorites} onToggleFavorite={handleToggleFavorite} />} />
             <Route path="/community" element={<Community user={user} />} />
             <Route path="/favorites" element={<Favorites user={user} favorites={favorites} onToggleFavorite={handleToggleFavorite} />} />
+            <Route path="/tickets" element={<Tickets />} />
             <Route path="/venues/:id" element={<VenueDetail />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
