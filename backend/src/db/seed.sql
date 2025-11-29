@@ -16,23 +16,23 @@ VALUES
 ("황주희", "user14@test.com", "pw14", NOW()),
 ("조민재", "user15@test.com", "pw15", NOW());
 
-INSERT INTO venues (name, address, created_at)
+INSERT INTO venues (name, address, image_url,created_at)
 VALUES
-("세종문화회관 대극장", "서울 종로구", NOW()),
-("블루스퀘어 신한카드홀", "서울 용산구", NOW()),
-("예술의전당 오페라하우스", "서울 서초구", NOW()),
-("LG아트센터 서울", "서울 강서구", NOW()),
-("잠실 실내체육관", "서울 송파구", NOW()),
-("코엑스 아티움", "서울 강남구", NOW()),
-("올림픽공원 KSPO 돔", "서울 송파구", NOW()),
-("충무아트센터", "서울 중구", NOW()),
-("경기아트센터", "경기 수원시", NOW()),
-("부산시민회관", "부산시 남구", NOW()),
-("대구 오페라하우스", "대구 북구", NOW()),
-("광주문화예술회관", "광주 북구", NOW()),
-("인천문화예술회관", "인천 남동구", NOW()),
-("대전예술의전당", "대전 서구", NOW()),
-("울산문화예술회관", "울산 남구", NOW());
+("세종문화회관 대극장", "서울 종로구","/venues/venue1.png", NOW()),
+("블루스퀘어 신한카드홀", "서울 용산구","/venues/venue2.png", NOW()),
+("예술의전당 오페라하우스", "서울 서초구","/venues/venue3.png", NOW()),
+("LG아트센터 서울", "서울 강서구","/venues/venue4.png", NOW()),
+("잠실 실내체육관", "서울 송파구","/venues/venue5.png", NOW()),
+("코엑스 아티움", "서울 강남구","/venues/venue6.png", NOW()),
+("올림픽공원 KSPO 돔", "서울 송파구","/venues/venue7.png", NOW()),
+("충무아트센터", "서울 중구","/venues/venue8.png", NOW()),
+("경기아트센터", "경기 수원시","/venues/venue9.png", NOW()),
+("부산시민회관", "부산시 남구","/venues/venue10.png", NOW()),
+("대구 오페라하우스", "대구 북구","/venues/venue11.png", NOW()),
+("광주문화예술회관", "광주 북구","/venues/venue12.png", NOW()),
+("인천문화예술회관", "인천 남동구","/venues/venue13.png", NOW()),
+("대전예술의전당", "대전 서구","/venues/venue14.png", NOW()),
+("울산문화예술회관", "울산 남구","/venues/venue15.png", NOW());
 
 INSERT INTO shows 
 (venue_id, title, category, description, poster_url, start_date, end_date, created_at)
@@ -599,3 +599,17 @@ INSERT INTO reviews (user_id, show_id, venue_id, seat_id, rating, content, image
 (8, 7, 4, 379, 5, '가까운 자리라 감동 2배.', NULL, NOW(), NOW()),
 (9, 6, 4, 388, 4, '음향이 깔끔하게 들립니다.', '/images/rev/v4_5.jpg', NOW(), NOW()),
 (10, 7, 4, 399, 5, '너무 좋은 자리에서 봤어요!', NULL, NOW(), NOW());
+
+
+UPDATE venues v
+LEFT JOIN (
+    SELECT 
+        venue_id,
+        COUNT(*) AS review_count,
+        COALESCE(AVG(rating), 0) AS review_rating
+    FROM reviews
+    GROUP BY venue_id
+) r ON v.id = r.venue_id
+SET 
+    v.review_count = COALESCE(r.review_count, 0),
+    v.review_rating = COALESCE(r.review_rating, 0);
