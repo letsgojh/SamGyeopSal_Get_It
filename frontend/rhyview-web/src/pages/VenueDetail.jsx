@@ -7,8 +7,13 @@ import SeatingChart from "../components/SeatingChart";
 import Modal from "../components/Modal";
 import ReviewForm from "../components/ReviewForm";
 
-import {getVenueById} from "../api/venuesApi.js";
+// API 함수
+import { getVenueById } from "../api/venuesApi";
+import { getSeats, getSeatReviews, createReview } from "../api/seatsApi";
 
+// =============================================================================
+// [스타일 유지] 사용자님의 원본 스타일 코드를 그대로 사용합니다.
+// =============================================================================
 const Wrapper = styled.div`
   padding: 24px 32px 32px;
   @media (max-width: 768px) {
@@ -171,9 +176,8 @@ const ReviewText = styled.p`
 `;
 
 const ModalListWrapper = styled.div`
-  padding: 0 20px 16px; /* 폼과 좌우 패딩 맞춤 */
+  padding: 0 20px 16px;
   
-  /* 리뷰가 없을 때 메시지 */
   .empty-message {
     color: #9ca3af;
     font-size: 13px;
@@ -181,7 +185,6 @@ const ModalListWrapper = styled.div`
     padding: 24px 0 8px;
   }
 
-  /* 모달 내의 리뷰 목록은 스크롤되도록 */
   ${ReviewList} {
     margin-top: 10px;
     max-height: 250px;
@@ -198,6 +201,25 @@ const ModalListWrapper = styled.div`
   }
 `;
 
+// ✅ [좌석 배치도] DB 데이터 구조(구역_열_번호)에 맞춰 생성
+const VENUE_LAYOUT = [
+  ['STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE', 'STAGE'],
+  ['A_1_1', 'A_1_2', 'A_1_3', 'A_1_4', 'A_1_5', null, 'B_1_1', 'B_1_2', 'B_1_3', 'B_1_4', 'B_1_5'],
+  ['A_2_1', 'A_2_2', 'A_2_3', 'A_2_4', 'A_2_5', null, 'B_2_1', 'B_2_2', 'B_2_3', 'B_2_4', 'B_2_5'],
+  [null, null, null, null, null, null, null, null, null, null, null],
+  ['B_3_1', 'B_3_2', 'B_3_3', 'B_3_4', 'B_3_5', null, 'C_3_1', 'C_3_2', 'C_3_3', 'C_3_4', 'C_3_5'],
+  ['B_4_1', 'B_4_2', 'B_4_3', 'B_4_4', 'B_4_5', null, 'C_4_1', 'C_4_2', 'C_4_3', 'C_4_4', 'C_4_5'],
+  [null, null, null, null, null, null, null, null, null, null, null],
+  ['C_5_1', 'C_5_2', 'C_5_3', 'C_5_4', 'C_5_5', null, 'D_5_1', 'D_5_2', 'D_5_3', 'D_5_4', 'D_5_5'],
+  ['C_6_1', 'C_6_2', 'C_6_3', 'C_6_4', 'C_6_5', null, 'D_6_1', 'D_6_2', 'D_6_3', 'D_6_4', 'D_6_5'],
+  [null, null, null, null, null, null, null, null, null, null, null],
+  ['D_7_1', 'D_7_2', 'D_7_3', 'D_7_4', 'D_7_5', null, null, null, null, null, null],
+  ['D_8_1', 'D_8_2', 'D_8_3', 'D_8_4', 'D_8_5', null, null, null, null, null, null],
+  // 추가 좌석
+  [null, null, null, null, null, null, 'A_9_1', 'A_9_2', 'A_9_3', 'A_9_4', 'A_9_5'],
+  [null, null, null, null, null, null, 'A_10_1', 'A_10_2', 'A_10_3', 'A_10_4', 'A_10_5'],
+];
+
 export default function VenueDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -205,24 +227,39 @@ export default function VenueDetail() {
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // DB 데이터
+  const [dbSeats, setDbSeats] = useState([]);
+  const [selectedSeatId, setSelectedSeatId] = useState(null); // DB PK
+
+  // 화면 UI
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedSeat, setSelectedSeat] = useState(null); // 화면용 이름 ("A구역 1열 1번")
   const [reviews, setReviews] = useState([]);
 
+  // 1. 초기 데이터 로드
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await getVenueById(id);
+      try {
+        const venueData = await getVenueById(id);
+        if (venueData) {
+          setVenue({
+            ...venueData,
+            name: venueData.name,
+            location: venueData.address,
+            category: "공연장",
+            rating: "0.0",
+            reviewCount: 0,
+            shortDesc: "좌석 배치도와 리뷰를 확인하세요.",
+            seatingLayout: [[]],
+          });
+        }
 
-      if (data) {
-        setVenue({
-          ...data,
-          name: data.name,
-          location: data.address,
-          category: "공연장",
-          rating: "0.0",
-          reviewCount: 0,
-          shortDesc: "좌석 배치도와 리뷰를 확인하세요.",
-          seatingLayout: [[]],
-        });
+        const seatsData = await getSeats(id);
+        console.log("💺 DB에서 가져온 전체 좌석:", seatsData);
+        setDbSeats(seatsData);
+      } catch (err) {
+        console.error(err);
       }
       setLoading(false);
     };
@@ -230,43 +267,69 @@ export default function VenueDetail() {
     fetchData();
   }, [id]);
 
-  const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [selectedSeat, setSelectedSeat] = useState(null);
+  // ✅ [수정] 좌석 클릭 핸들러 (매칭 로직)
+  const handleSeatClick = async (seatLabel) => {
+    // 1. 문자열 분해: "A_1_1" -> A, 1, 1
+    const parts = seatLabel.split('_');
+    if (parts.length !== 3) return;
 
-  // 👈 6. 좌석 클릭 시 실행될 함수
-  const handleSeatClick = (seatId) => {
-    setSelectedSeat(seatId);  // (1) 선택한 좌석 ID 저장
-    setReviewModalOpen(true); // (2) 리뷰 작성 모달 열기
+    const sec = parts[0]; 
+    const row = parts[1]; 
+    const num = parts[2]; 
+
+    console.log(`🖱️ 클릭: [${sec}구역 ${row}열 ${num}번]`);
+
+    // 2. DB에서 찾기
+    const targetSeat = dbSeats.find(s => {
+      // DB 데이터 타입(숫자/문자) 무시하고 비교
+      return String(s.section) === sec && 
+             String(s.seat_row) === row && 
+             String(s.number) === num;
+    });
+
+    if (targetSeat) {
+      console.log("✅ 매칭 성공:", targetSeat);
+      
+      setSelectedSeat(`${sec}구역 ${row}열 ${num}번`);
+      setSelectedSeatId(targetSeat.id);
+      
+      // 리뷰 가져오기
+      try {
+        const realReviews = await getSeatReviews(id, targetSeat.id);
+        setReviews(realReviews);
+      } catch (e) {
+        setReviews([]);
+      }
+
+      setReviewModalOpen(true);
+    } else {
+      console.error("❌ 매칭 실패. DB 데이터:", dbSeats);
+      alert("등록되지 않은 좌석입니다.");
+    }
   };
 
-  // 👈 7. 리뷰 폼 제출 시 실행될 함수
-  const handleAddReview = (newReview) => {
-    setReviews([newReview, ...reviews]); // (1) 리뷰 목록에 추가
-    setReviewModalOpen(false); // (2) 리뷰 작성 모달 닫기
-    setSelectedSeat(null); // (3) 선택한 좌석 초기화
+  // 3. 리뷰 작성 핸들러
+  const handleAddReview = async (newReview) => {
+    try {
+      const token = localStorage.getItem("token") || ""; 
+      // API 호출 (seat_id 포함)
+      await createReview(id, {
+        seat_id: selectedSeatId,
+        rating: newReview.rating,
+        content: newReview.text
+      }, token);
+
+      // 목록 갱신
+      const updatedReviews = await getSeatReviews(id, selectedSeatId);
+      setReviews(updatedReviews);
+      
+    } catch (err) {
+      alert("리뷰 등록 실패 (로그인이 필요합니다)");
+    }
   };
 
-  const reviewsForSeat = reviews.filter((r) => r.seat === selectedSeat);
-
-  if (loading) {
-    return (
-      <Wrapper>
-        <PageHeader title="데이터 불러오는 중..." />
-      </Wrapper>
-    );
-  }
-
-  if (!venue) {
-    return (
-      <Wrapper>
-        <PageHeader title="공연장 정보를 찾을 수 없어요" />
-        <p style={{ fontSize: 14, color: "#6b7280" }}>
-          잘못된 주소이거나 아직 등록되지 않은 공연장입니다.
-        </p>
-        <GhostButton onClick={() => navigate("/")}>← 홈으로</GhostButton>
-      </Wrapper>
-    );
-  }
+  if (loading) return <Wrapper><PageHeader title="로딩중..." /></Wrapper>;
+  if (!venue) return <Wrapper><PageHeader title="정보 없음" /></Wrapper>;
 
   return (
     <>
@@ -278,38 +341,24 @@ export default function VenueDetail() {
         <TopLayout>
           <SeatMapBox>
             <SeatMapHeader>좌석 배치도</SeatMapHeader>
-            {/* placeholder 텍스트와 <SeatMapBody> 대신 
-              SeatingChart 컴포넌트를 렌더링합니다.
-            */}
             <SeatingChart
-              layout={venue.seatingLayout || [[]]} // layout이 없을 경우 에러 방지
+              layout={VENUE_LAYOUT}
               onSeatClick={handleSeatClick}
-              reviews={reviews}
+              reviews={[]} 
             />
           </SeatMapBox>
 
           <InfoBox>
             <Tag>{venue.category}</Tag>
             <div style={{ fontSize: 20, fontWeight: 800 }}>{venue.name}</div>
-            <div
-              style={{
-                fontSize: 13,
-                color: "#6b7280",
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 4 }}>
               {venue.location}
             </div>
-
             <RatingRow>
               <span className="star">★</span>
-              <span>
-                {venue.rating} ({venue.reviewCount}개 리뷰)
-              </span>
+              <span>{venue.rating} ({venue.reviewCount}개 리뷰)</span>
             </RatingRow>
-            <div
-              style={{ fontSize: 13, color: "#4b5563", marginTop: 6 }}
-            >
+            <div style={{ fontSize: 13, color: "#4b5563", marginTop: 6 }}>
               {venue.shortDesc}
             </div>
             <ButtonRow>
@@ -330,67 +379,42 @@ export default function VenueDetail() {
             </ReviewHint>
           </ReviewHeaderRow>
           <ReviewList>
-            {reviews.map((r) => (
-              <ReviewCard key={r.id}>
-                <ReviewMetaRow>
-                  <SeatTag>{r.seat}</SeatTag>
-                  <SmallRating>★ {r.rating}</SmallRating>
-                </ReviewMetaRow>
-                <ReviewText>{r.text}</ReviewText>
-              </ReviewCard>
-            ))}
-            {reviews.length === 0 && (
-              <ReviewText
-                style={{ color: "#9ca3af", fontSize: 13 }}
-              >
-                아직 등록된 리뷰가 없습니다.
-              </ReviewText>
-            )}
+             <div style={{color:'#999', fontSize:13, padding:'10px 0'}}>
+                좌석을 선택하면 해당 좌석의 리뷰를 볼 수 있습니다.
+             </div>
           </ReviewList>
         </ReviewSection>
       </Wrapper>
 
-      {/* 👈 10. 리뷰 작성 모달 렌더링 */}
       <Modal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
-        title={selectedSeat ? `${selectedSeat} 좌석 리뷰 작성` : "리뷰"}
+        title={selectedSeat ? `${selectedSeat} 리뷰` : "리뷰"}
       >
-        {/* (1) 이 좌석의 리뷰 목록 */}
         {reviewModalOpen && (
           <ReviewForm seatId={selectedSeat} onSubmit={handleAddReview} />
         )}
         <br />
         <ModalListWrapper>
-          {reviewsForSeat.length === 0 ? (
+          {reviews.length === 0 ? (
             <div className="empty-message">
               이 좌석의 첫 리뷰를 남겨주세요!
             </div>
           ) : (
             <>
-              <ReviewTitle style={{ fontSize: "15px" }}>
-                이 좌석의 리뷰 ({reviewsForSeat.length}개)
+              <ReviewTitle style={{ fontSize: "15px", marginBottom: "10px" }}>
+                이 좌석의 리뷰 ({reviews.length}개)
               </ReviewTitle>
               <ReviewList>
-                {reviewsForSeat.map((r) => (
+                {reviews.map((r) => (
                   <ReviewCard key={r.id}>
                     <ReviewMetaRow>
                       <SmallRating>★ {r.rating}</SmallRating>
                       <span className="review-info">
-                        {r.user} · {r.time}
+                        {r.created_at?.slice(0, 10) || "날짜 없음"}
                       </span>
                     </ReviewMetaRow>
-                    {r.title && (
-                      <ReviewText
-                        style={{
-                          fontWeight: 700,
-                          marginBottom: 4,
-                        }}
-                      >
-                        {r.title}
-                      </ReviewText>
-                    )}
-                    <ReviewText>{r.text}</ReviewText>
+                    <ReviewText>{r.content}</ReviewText>
                   </ReviewCard>
                 ))}
               </ReviewList>

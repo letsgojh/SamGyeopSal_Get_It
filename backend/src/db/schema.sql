@@ -2,11 +2,12 @@ CREATE DATABASE IF NOT EXISTS theater_app;
 USE theater_app;
 
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS seats;
 DROP TABLE IF EXISTS shows;
 DROP TABLE IF EXISTS venues;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS favorites;
+
 
 
 CREATE TABLE users (
@@ -21,8 +22,12 @@ CREATE TABLE venues (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     address VARCHAR(300),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    image_url VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    review_count INT,
+    review_rating FLOAT
 );
+
 
 
 CREATE TABLE shows (
