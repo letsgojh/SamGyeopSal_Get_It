@@ -95,6 +95,7 @@ cd SamGyeopSal_Get_It
     DB_USER=root
     DB_PASS=[비밀번호]
     DB_NAME=theater_app
+    JWT_SECRET=my_screct_password
     ```
 
 2. schema + dummy_data 생성
